@@ -15,4 +15,9 @@ public class FirebaseManager {
         System.out.println("hi");
     }
 
+    void sayHi2() {
+        System.out.println("hi");
+    }
+
+
 }
