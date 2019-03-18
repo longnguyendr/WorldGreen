@@ -23,6 +23,8 @@ public class FirebaseManager {
     void sayHi2() {
         System.out.println("hi");
     }
-
+    void sayHi3() {
+        System.out.println("hi");
+    }
 
 }
