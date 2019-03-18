@@ -5,8 +5,13 @@ public class FirebaseManager {
 
     public FirebaseManager(String name) {
         this.name = name;
+        String Hey_testing;
+        Hey_testing = "Just testing";
     }
 
+    String getEvent() {
+        return name;
+    }
     String getName() {
         return name;
     }
