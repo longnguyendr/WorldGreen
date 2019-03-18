@@ -12,14 +12,13 @@ public class FirebaseManager {
     String getEvent1() {
         return name;
     }
-
     String getEvent2() {
         return name;
     }
     String getEvent3() {
         return name;
     }
- String getEvent4() {
+    String getEvent4() {
         return name;
     }
 
