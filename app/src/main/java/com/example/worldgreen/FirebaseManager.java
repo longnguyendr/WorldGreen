@@ -9,6 +9,9 @@ public class FirebaseManager {
         Hey_testing = "Just testing";
     }
 
+    String getEvent() {
+        return name;
+    }
     String getName() {
         return name;
     }
