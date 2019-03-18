@@ -13,6 +13,9 @@ public class FirebaseManager {
         return name;
     }
 
+ String getEvent3() {
+        return name;
+    }
 
 
 }
