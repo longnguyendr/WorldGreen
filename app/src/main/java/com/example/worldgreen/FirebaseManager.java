@@ -9,4 +9,7 @@ public class FirebaseManager {
         Hey_testing = "Just testing";
     }
 
+    String getName() {
+        return name;
+    }
 }
