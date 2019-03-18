@@ -6,4 +6,8 @@ public class FirebaseManager {
     public FirebaseManager(String name) {
         this.name = name;
     }
+
+    String getName() {
+        return name;
+    }
 }
