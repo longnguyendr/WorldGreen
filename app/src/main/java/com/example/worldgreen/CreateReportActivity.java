@@ -1,5 +1,7 @@
 package com.example.worldgreen;
 
+import android.content.Context;
+import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,13 +13,14 @@ import android.widget.Toast;
 
 public class CreateReportActivity extends AppCompatActivity {
 
-    static final String TAG = "CreateReportActivity";    
-    
+    static final String TAG = "CreateReportActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_report);
         setupCreateButton();
+        setupGetButton();
     }
 
     void setupCreateButton() {
@@ -30,9 +33,19 @@ public class CreateReportActivity extends AppCompatActivity {
         });
     }
 
+    void setupGetButton() {
+        Button getButton = (Button) findViewById(R.id.create_report_get);
+        getButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getReport();
+            }
+        });
+    }
+
     void createReport() {
         EditText description = (EditText) findViewById(R.id.create_report_description);
-        Report report = new Report(123.1,321.1,description.getText().toString());
+        Report report = new Report(123.1, 321.1, description.getText().toString());
         FirebaseManager manager = new FirebaseManager();
         try {
             manager.saveReport(report);
@@ -44,8 +57,18 @@ public class CreateReportActivity extends AppCompatActivity {
         }
     }
 
+    void getReport() {
+        FirebaseManager manager = new FirebaseManager();
+        manager.getAllReports();
+    }
+
     void resetUI() {
         EditText description = (EditText) findViewById(R.id.create_report_description);
         description.setText(null);
+    }
+
+    void getLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
     }
 }
