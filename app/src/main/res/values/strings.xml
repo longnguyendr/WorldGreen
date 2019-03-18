@@ -28,4 +28,5 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">Please enter your registered Email to sent you password reset instructions.</string>
+    <string name="btn_create_report">Create report</string>
 </resources>
