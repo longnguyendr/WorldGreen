@@ -10,4 +10,9 @@ public class FirebaseManager {
     String getName() {
         return name;
     }
+
+    void sayHi() {
+        System.out.println("hi");
+    }
+
 }
