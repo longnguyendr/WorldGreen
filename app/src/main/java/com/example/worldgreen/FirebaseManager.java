@@ -9,22 +9,4 @@ public class FirebaseManager {
         Hey_testing = "Just testing";
     }
 
-    String getEvent() {
-        return name;
-    }
-    String getName() {
-        return name;
-    }
-
-    void sayHi() {
-        System.out.println("hi");
-    }
-
-    void sayHi2() {
-        System.out.println("hi");
-    }
-    void sayHi3() {
-        System.out.println("hi");
-    }
-
 }
