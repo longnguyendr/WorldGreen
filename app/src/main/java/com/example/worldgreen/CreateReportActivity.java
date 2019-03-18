@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,14 +31,21 @@ public class CreateReportActivity extends AppCompatActivity {
     }
 
     void createReport() {
-        TextView description = (TextView) findViewById(R.id.create_report_description);
-        Report report = new Report(123.1,321.1,description.toString());
+        EditText description = (EditText) findViewById(R.id.create_report_description);
+        Report report = new Report(123.1,321.1,description.getText().toString());
         FirebaseManager manager = new FirebaseManager();
         try {
             manager.saveReport(report);
+            Toast.makeText(getApplicationContext(), "Report saved!", Toast.LENGTH_SHORT).show();
+            resetUI();
         } catch (Exception e) {
             Log.d(TAG, "createReport: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    void resetUI() {
+        EditText description = (EditText) findViewById(R.id.create_report_description);
+        description.setText(null);
     }
 }

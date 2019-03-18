@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".CreateReportActivity">
 
-    <TextView
+    <EditText
         android:id="@+id/create_report_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="100dp"
+        android:gravity="center"
         />
 
     <Button

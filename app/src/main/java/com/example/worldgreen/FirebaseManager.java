@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class FirebaseManager {
-    
+
     static final String TAG = "Firebase Manager";
 
     void saveReport(Report report) throws Exception {
