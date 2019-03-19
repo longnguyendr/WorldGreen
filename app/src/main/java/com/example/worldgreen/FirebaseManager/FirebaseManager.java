@@ -128,8 +128,24 @@ public class FirebaseManager {
 
     }
 
-    public void getAllEvents() {
+    public void getAllEvents(final EventCallback eventCallback) {
+        final ArrayList<Event> events = new ArrayList<>();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference rootRef = database.getReference();
 
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: " + ds.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
     }
 
     /**
