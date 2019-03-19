@@ -14,21 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Reports.MyReportActivity"></activity>
-        <activity android:name=".DonateActivity" />
-        <activity android:name=".AllEventActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".Donate.DonateActivity" />
+        <activity android:name=".Events.AllEventActivity" />
+        <activity android:name=".Users.ProfileActivity" />
         <activity android:name=".Reports.AllReportActivity" />
         <activity android:name=".Reports.DetailReportActivity" />
-        <activity android:name=".DetailEventActivity" />
+        <activity android:name=".Events.DetailEventActivity" />
         <activity android:name=".Reports.CreateReportActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Users.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".Users.RegisterActivity" />
         <activity android:name=".MainActivity" />
     </application>
 
