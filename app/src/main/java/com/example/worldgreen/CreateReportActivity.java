@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class CreateReportActivity extends AppCompatActivity {
 
@@ -58,8 +61,9 @@ public class CreateReportActivity extends AppCompatActivity {
     }
 
     void getReport() {
+        ArrayList<Report> rep = new ArrayList<Report>();
         FirebaseManager manager = new FirebaseManager();
-        manager.getAllReports();
+        Log.d(TAG, "getReport: " + manager.getAllReports().size()); //ASYNCHRONOUS FIX IT!
     }
 
     void resetUI() {

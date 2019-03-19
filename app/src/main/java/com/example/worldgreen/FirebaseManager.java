@@ -50,7 +50,7 @@ public class FirebaseManager {
 
     ArrayList<Report> getAllReports() {
         Log.d(TAG, "getAllReports: PRESSED");
-        ArrayList<Report> reports = new ArrayList<>();
+        final ArrayList<Report> reports = new ArrayList<>();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rootRef = database.getReference();
@@ -59,17 +59,16 @@ public class FirebaseManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onDataChange: user: " + ds.getKey());
-                    for (DataSnapshot user : ds.getChildren()) {
-                        for (DataSnapshot report: user.getChildren()) {
-                            String description = report.child("description").getValue(String.class);
-                            Log.d(TAG, "onDataChange: USER: " + user.getKey() + "\n" + "REPORT: " + report.getKey() + "\n" + "");
-                            Log.d(TAG, "onDataChange: report:" + report.getKey() + ": " + description);
-                        }
-
+                for (DataSnapshot user : dataSnapshot.getChildren()) {
+                    //get user
+                    Log.d(TAG, "USER: " + user.getKey());
+                    for (DataSnapshot report : user.child("reports").getChildren()) {
+                        String description = report.child("description").getValue(String.class);
+                        Double longitude = report.child("longitude").getValue(Double.class);
+                        Double latitude = report.child("latitude").getValue(Double.class);
+                        Report r = new Report(longitude, latitude, description);
+                        reports.add(r);
                     }
-
                 }
             }
 
@@ -84,40 +83,6 @@ public class FirebaseManager {
 
         return reports;
     }
-
-//    //to fetch all the users of firebase Auth app
-//    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-//
-//    DatabaseReference usersdRef = rootRef.child("users");
-//
-//    ValueEventListener eventListener = new ValueEventListener() {
-//        @Override
-//        public void onDataChange(DataSnapshot dataSnapshot) {
-//            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//
-//                String name = ds.child("name").getValue(String.class);
-//
-//                Log.d("TAG", name);
-//
-//                array.add(name);
-//
-//            }
-//            ArrayAdapter<String> adapter = new ArrayAdapter(OtherUsersActivity.this, android.R.layout.simple_list_item_1, array);
-//
-//            mListView.setAdapter(adapter);
-//
-//        }
-//
-//        @Override
-//        public void onCancelled(DatabaseError databaseError) {
-//
-//        }
-//    };
-//        usersdRef.addListenerForSingleValueEvent(eventListener);
-//}
-//
-//        return reports;
-//                }
 
     void getUsersReports() {
 
