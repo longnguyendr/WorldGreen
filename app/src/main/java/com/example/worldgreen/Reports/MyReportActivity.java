@@ -1,4 +1,4 @@
-package com.example.worldgreen;
+package com.example.worldgreen.Reports;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.FirebaseManager.ReportCallback;
+import com.example.worldgreen.R;
+import com.example.worldgreen.DataModel.Report;
 
 import java.util.ArrayList;
 

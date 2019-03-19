@@ -1,7 +1,9 @@
-package com.example.worldgreen;
+package com.example.worldgreen.Reports;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.worldgreen.R;
 
 public class AllReportActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.worldgreen;
+package com.example.worldgreen.Reports;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.worldgreen.R;
+import com.example.worldgreen.DataModel.Report;
 
 import java.util.ArrayList;
 

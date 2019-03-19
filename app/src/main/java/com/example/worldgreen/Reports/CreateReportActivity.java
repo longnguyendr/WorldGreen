@@ -1,4 +1,4 @@
-package com.example.worldgreen;
+package com.example.worldgreen.Reports;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.FirebaseManager.ReportCallback;
+import com.example.worldgreen.R;
+import com.example.worldgreen.DataModel.Report;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -26,8 +28,8 @@ public class CreateReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_report);
         setupCreateButton();
-        setupGetButton();
-        setupMyRep();
+        setupGetButton(); // btn just for test
+        setupMyRep(); // btn just for test
     }
 
     void setupCreateButton() {

@@ -1,4 +1,6 @@
-package com.example.worldgreen;
+package com.example.worldgreen.FirebaseManager;
+
+import com.example.worldgreen.DataModel.Report;
 
 import java.util.ArrayList;
 
