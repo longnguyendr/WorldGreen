@@ -136,9 +136,17 @@ public class FirebaseManager {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onDataChange: " + ds.getKey());
+                for (DataSnapshot user : dataSnapshot.getChildren()) {
+                    for (DataSnapshot event : user.child("events").getChildren()) {
+                        String title = event.child("title").getValue(String.class);
+                        String description = event.child("description").getValue(String.class);
+                        String date = event.child("date").getValue(String.class);
+                        Report r = new Report(123,123,"hardcoded report");
+                        Event e = new Event(description,title,date,r);
+                        events.add(e);
+                    }
                 }
+                eventCallback.onCallback(events);
             }
 
             @Override
