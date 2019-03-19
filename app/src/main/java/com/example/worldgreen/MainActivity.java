@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.worldgreen.Users.LoginActivity;
 import com.example.worldgreen.Reports.CreateReportActivity;
+import com.example.worldgreen.Users.ProfileActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
