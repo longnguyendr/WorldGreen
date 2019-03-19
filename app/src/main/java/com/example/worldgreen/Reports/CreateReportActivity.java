@@ -1,6 +1,7 @@
-package com.example.worldgreen;
+package com.example.worldgreen.Reports;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,8 +9,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.worldgreen.FirebaseManager.FirebaseManager;
+import com.example.worldgreen.FirebaseManager.ReportCallback;
+import com.example.worldgreen.R;
+import com.example.worldgreen.DataModel.Report;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 public class CreateReportActivity extends AppCompatActivity {
 
@@ -20,7 +28,8 @@ public class CreateReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_report);
         setupCreateButton();
-        setupGetButton();
+        setupGetButton(); // btn just for test
+        setupMyRep(); // btn just for test
     }
 
     void setupCreateButton() {
@@ -57,9 +66,27 @@ public class CreateReportActivity extends AppCompatActivity {
         }
     }
 
+    void setupMyRep() {
+        Button myRep = (Button) findViewById(R.id.testMyReports);
+        myRep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseManager manager = new FirebaseManager();
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                manager.getUsersReports(uid, new ReportCallback() {
+                    @Override
+                    public void onCallback(ArrayList<Report> reports) {
+                        Log.d(TAG, "onCallback: myReports" + reports.size());
+                    }
+                });
+            }
+        });
+    }
+
     void getReport() {
-        FirebaseManager manager = new FirebaseManager();
-        manager.getAllReports();
+        Intent i = new Intent(this, MyReportActivity.class);
+        i.putExtra("allReports", true);
+        startActivity(i);
     }
 
     void resetUI() {

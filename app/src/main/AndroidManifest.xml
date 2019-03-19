@@ -13,14 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MyReportActivity"></activity>
+        <activity android:name=".Reports.MyReportActivity"></activity>
         <activity android:name=".DonateActivity" />
         <activity android:name=".AllEventActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".AllReportActivity" />
-        <activity android:name=".DetailReportActivity" />
+        <activity android:name=".Reports.AllReportActivity" />
+        <activity android:name=".Reports.DetailReportActivity" />
         <activity android:name=".DetailEventActivity" />
-        <activity android:name=".CreateReportActivity" />
+        <activity android:name=".Reports.CreateReportActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
