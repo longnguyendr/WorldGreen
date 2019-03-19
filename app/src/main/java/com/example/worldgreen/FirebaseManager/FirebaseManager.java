@@ -48,10 +48,10 @@ public class FirebaseManager {
                 });
     }
 
-    ArrayList<Report> getAllReports() {
+    public void getAllReports(final ReportCallback reportCallback) {
         Log.d(TAG, "getAllReports: PRESSED");
-        final ArrayList<Report> reports = new ArrayList<>();
 
+        final ArrayList<Report> reports = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rootRef = database.getReference();
 
@@ -70,6 +70,7 @@ public class FirebaseManager {
                         reports.add(r);
                     }
                 }
+                reportCallback.onCallback(reports);
             }
 
             @Override
@@ -81,7 +82,6 @@ public class FirebaseManager {
 
         rootRef.addListenerForSingleValueEvent(eventListener);
 
-        return reports;
     }
 
     void getUsersReports() {
