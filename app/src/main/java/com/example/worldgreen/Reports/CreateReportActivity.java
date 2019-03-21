@@ -83,12 +83,13 @@ public class CreateReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final FirebaseManager manager = new FirebaseManager();
-                manager.getUsersReports(FirebaseAuth.getInstance().getCurrentUser().getUid(), new ReportCallback() {
+                manager.getAllReports(new ReportCallback() {
                     @Override
                     public void onCallback(ArrayList<Report> reports) {
+                        Log.d(TAG, "onCallback: REPORTS SIZE" + reports.size());
                         Event e = new Event("i am test event", "test event", "13-02-2020", reports.get(0));
                         try {
-                            manager.createEvent(e);
+                            manager.saveEvent(e);
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
@@ -108,7 +109,14 @@ public class CreateReportActivity extends AppCompatActivity {
                 manager.getAllEvents(new EventCallback() {
                     @Override
                     public void onCallback(ArrayList<Event> events) {
+                        // update events method
                         Log.d(TAG, "onCallback: ALL EVENTS SIZE: " + events.size());
+                    }
+                });
+                manager.getUsersEvents(FirebaseAuth.getInstance().getCurrentUser().getUid(), new EventCallback() {
+                    @Override
+                    public void onCallback(ArrayList<Event> events) {
+                        Log.d(TAG, "onCallback: USERS EVENTS SIZE: " + events.size());
                     }
                 });
             }

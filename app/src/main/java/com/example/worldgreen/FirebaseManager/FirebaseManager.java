@@ -22,6 +22,10 @@ public class FirebaseManager {
 
     static final String TAG = "Firebase Manager";
 
+
+    //region Report methods
+    //----------------------------------------------------------------------------------------------
+
     /**
      *
      * @param report
@@ -56,32 +60,7 @@ public class FirebaseManager {
                 });
     }
 
-    public void createEvent(Event event) throws Exception {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference ref = database.getReference(user.getUid()).child("events").push();
 
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("title", event.getTitle());
-        data.put("description", event.getDescription());
-        data.put("date", event.getDate());
-        data.put("reportKey", event.getReport().getKey());
-        data.put("reportCreatorUid", event.getReport().getCreatorUid());
-
-        ref.setValue(data)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            try {
-                                throw task.getException();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-    }
 
     /**
      *
@@ -110,7 +89,7 @@ public class FirebaseManager {
                         Double latitude = report.child("latitude").getValue(Double.class);
                         String ownerId = user.getKey();
                         String reportKey = report.getKey();
-                        Report r = new Report(longitude, latitude, description, reportKey, ownerId);
+                        Report r = new Report(longitude, latitude, description, ownerId ,reportKey);
                         reports.add(r);
                     }
                 }
@@ -122,71 +101,7 @@ public class FirebaseManager {
 
             }
         };
-
-
         rootRef.addListenerForSingleValueEvent(eventListener);
-
-    }
-
-    public void getAllEvents(final EventCallback eventCallback) {
-        Log.d(TAG, "getAllEvents: called");
-        final ArrayList<Event> events = new ArrayList<>();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference rootRef = database.getReference();
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot user : dataSnapshot.getChildren()) {
-                    for (DataSnapshot event : user.child("events").getChildren()) {
-
-                        final String title = event.child("title").getValue(String.class);
-                        final String description = event.child("description").getValue(String.class);
-                        final String date = event.child("date").getValue(String.class);
-                        String reportKey = event.child("reportKey").getValue(String.class);
-                        String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
-                        Log.d(TAG, "onDataChange: calling getCurrentReport");
-                        getCurrentReport(reportKey, reportCreatorUid, new CurrentReportCallback() {
-                            @Override
-                            public void onCallback(Report report) {
-                                Event e = new Event(description,title,date,report);
-                                events.add(e);
-                            }
-                        });
-                    }
-                }
-                Log.d(TAG, "onDataChange: calling eventCallback");
-                eventCallback.onCallback(events);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        rootRef.addListenerForSingleValueEvent(eventListener);
-    }
-
-    public void getCurrentReport(final String reportKey, final String creatorUserId, final CurrentReportCallback currentReportCallback) {
-        Log.d(TAG, "getCurrentReport: IM in current report!");
-        Log.d(TAG, "getCurrentReport: CREATOR ID: " + creatorUserId);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference rootRef = database.getReference().child(creatorUserId);
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot report : dataSnapshot.child("reports").getChildren()) {
-                    Log.d(TAG, "onDataChange: IM IN FOR");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        rootRef.addValueEventListener(eventListener);
     }
 
     /**
@@ -224,8 +139,121 @@ public class FirebaseManager {
         rootRef.addListenerForSingleValueEvent(eventListener);
     }
 
-    
+    public void getCurrentReport(final String reportKey, final String creatorUserId, final CurrentReportCallback currentReportCallback) {
+        Log.d(TAG, "getCurrentReport: IM in current report!");
+        Log.d(TAG, "getCurrentReport: CREATOR ID: " + creatorUserId);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference rootRef = database.getReference().child(creatorUserId);
 
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot report : dataSnapshot.child("reports").getChildren()) {
+                    if (reportKey.equals(report.getKey())) {
+                        int longitude = report.child("longitude").getValue(int.class);
+                        int latitude = report.child("latitude").getValue(int.class);
+                        String description = report.child("description").getValue(String.class);
+                        Report r = new Report(longitude,latitude,description,creatorUserId,reportKey);
+                        currentReportCallback.onCallback(r);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        rootRef.addValueEventListener(eventListener);
+    }
+
+
+
+    //endregion
+
+
+    //region Event methods
+    //----------------------------------------------------------------------------------------------
+
+    public void saveEvent(Event event) throws Exception {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference ref = database.getReference(user.getUid()).child("events").push();
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("title", event.getTitle());
+        data.put("description", event.getDescription());
+        data.put("date", event.getDate());
+        data.put("reportKey", event.getReport().getKey());
+        data.put("reportCreatorUid", event.getReport().getCreatorUid());
+
+        ref.setValue(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            try {
+                                throw task.getException();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
+     *
+     * @param eventCallback
+     * eventCallback method is called every time method fetch new event (because of fetching also report object)
+     * So if there is 5 events, eventCallback will be called 5 times.
+     */
+
+    public void getAllEvents(final EventCallback eventCallback) {
+        final ArrayList<Event> events = new ArrayList<>();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference rootRef = database.getReference();
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot user : dataSnapshot.getChildren()) {
+                    for (DataSnapshot event : user.child("events").getChildren()) {
+
+                        final String title = event.child("title").getValue(String.class);
+                        final String description = event.child("description").getValue(String.class);
+                        final String date = event.child("date").getValue(String.class);
+                        String reportKey = event.child("reportKey").getValue(String.class);
+                        String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
+                        getCurrentReport(reportKey, reportCreatorUid, new CurrentReportCallback() {
+                            @Override
+                            public void onCallback(Report report) {
+                                Event e = new Event(description,title,date,report);
+                                events.add(e);
+                                eventCallback.onCallback(events);
+                            }
+                        });
+                    }
+                }
+                eventCallback.onCallback(events);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        rootRef.addListenerForSingleValueEvent(eventListener);
+    }
+
+    /**
+     *
+     * @param userId
+     * @param eventCallback
+     *
+     * eventCallback method is called every time method fetch new event (because of fetching also report object)
+     * So if there is 5 events, eventCallback will be called 5 times.
+     */
     public void getUsersEvents(final String userId, final EventCallback eventCallback) {
         final ArrayList<Event> events = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -241,15 +269,16 @@ public class FirebaseManager {
                     final String date = event.child("date").getValue(String.class);
                     String reportKey = event.child("reportKey").getValue(String.class);
                     String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
-
+                    Log.d(TAG, "onDataChange: calling getCurrentReport");
                     getCurrentReport(reportKey, reportCreatorUid, new CurrentReportCallback() {
                         @Override
                         public void onCallback(Report report) {
+                            Log.d(TAG, "onCallback: I got report from callback!");
                             Event e = new Event(description,title,date,report);
                             events.add(e);
+                            eventCallback.onCallback(events);
                         }
                     });
-
                 }
                 eventCallback.onCallback(events);
             }
@@ -259,8 +288,13 @@ public class FirebaseManager {
 
             }
         };
-        rootRef.addValueEventListener(eventListener);
+        rootRef.addListenerForSingleValueEvent(eventListener);
     }
+
+    //endregion
+
+
+
 
 
 
