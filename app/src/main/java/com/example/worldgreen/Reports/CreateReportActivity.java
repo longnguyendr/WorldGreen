@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.worldgreen.DataModel.Event;
+import com.example.worldgreen.FirebaseManager.EventCallback;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.FirebaseManager.ReportCallback;
 import com.example.worldgreen.R;
@@ -30,6 +32,8 @@ public class CreateReportActivity extends AppCompatActivity {
         setupCreateButton();
         setupGetButton(); // btn just for test
         setupMyRep(); // btn just for test
+        setupCreateEventButton(); //btn just for test
+        setupGetEventsButton(); //btn just for test
     }
 
     void setupCreateButton() {
@@ -47,7 +51,14 @@ public class CreateReportActivity extends AppCompatActivity {
         getButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getReport();
+//                getReport();
+                FirebaseManager manager = new FirebaseManager();
+                manager.getAllReports(new ReportCallback() {
+                    @Override
+                    public void onCallback(ArrayList<Report> reports) {
+                        Log.d(TAG, "onCallback: REPORTS: " + reports.size());
+                    }
+                });
             }
         });
     }
@@ -64,6 +75,45 @@ public class CreateReportActivity extends AppCompatActivity {
             Log.d(TAG, "createReport: " + e.getMessage());
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    void setupCreateEventButton() {
+        Button createEventButton = (Button) findViewById(R.id.testCreateEvent);
+        createEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final FirebaseManager manager = new FirebaseManager();
+                manager.getUsersReports(FirebaseAuth.getInstance().getCurrentUser().getUid(), new ReportCallback() {
+                    @Override
+                    public void onCallback(ArrayList<Report> reports) {
+                        Event e = new Event("i am test event", "test event", "13-02-2020", reports.get(0));
+                        try {
+                            manager.createEvent(e);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    void setupGetEventsButton() {
+        Log.d(TAG, "setupGetEventsButton: pressed");
+        Button getEventsButton = (Button) findViewById(R.id.testGetEvents);
+        getEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseManager manager = new FirebaseManager();
+                manager.getAllEvents(new EventCallback() {
+                    @Override
+                    public void onCallback(ArrayList<Event> events) {
+                        Log.d(TAG, "onCallback: ALL EVENTS SIZE: " + events.size());
+                    }
+                });
+            }
+        });
+
     }
 
     void setupMyRep() {

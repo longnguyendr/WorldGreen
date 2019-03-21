@@ -44,5 +44,23 @@
         android:text="myRep"
         />
 
+    <Button
+        android:id="@+id/testCreateEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/create_report_get"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="create Event"
+        />
+
+    <Button
+        android:id="@+id/testGetEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get events"
+        app:layout_constraintTop_toBottomOf="@id/create_report_get"
+        app:layout_constraintLeft_toRightOf="@+id/testCreateEvent"
+        />
+
 
 </android.support.constraint.ConstraintLayout>
