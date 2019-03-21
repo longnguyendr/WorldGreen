@@ -31,17 +31,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-
-        <Button
-            android:id="@+id/Logout_button"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/bg_main"
-            android:text="@string/btn_sign_out"
-            android:textColor="@android:color/black"
-            android:textStyle="bold" />
-
         <Button
             android:id="@+id/create_report_button"
             android:layout_width="300dp"
@@ -58,6 +47,44 @@
             android:layout_marginTop="16dp"
             android:background="@color/bg_main"
             android:text="@string/btn_profile"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/view_all_report_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/bg_main"
+            android:text="@string/view_all_report_button"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/view_all_event_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/bg_main"
+            android:text="@string/view_all_event_button"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/donate_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/bg_main"
+            android:text="@string/donate_button"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/Logout_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/bg_main"
+            android:text="@string/btn_sign_out"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
     </LinearLayout>
