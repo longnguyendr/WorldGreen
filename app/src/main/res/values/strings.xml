@@ -16,7 +16,7 @@
     <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Get registered now!</string>
-    <string name="btn_link_to_login">Already registered. Login Me!</string>
+    <string name="btn_link_to_login">Already registered. Login Here!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
@@ -30,4 +30,8 @@
     <string name="forgot_password_msg">Please enter your registered Email to sent you password reset instructions.</string>
     <string name="btn_create_report">Create report</string>
     <string name="btn_profile">View Profile</string>
+    <string name="create_event_button">Create Event</string>
+    <string name="donate_button">Donate</string>
+    <string name="view_all_report_button">View All Report</string>
+    <string name="view_all_event_button">View All Event</string>
 </resources>
