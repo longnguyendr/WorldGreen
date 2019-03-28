@@ -17,7 +17,7 @@ public class DetailReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_report);
 
-        gallery = (LinearLayout) findViewById(R.id.create_report_gallery);
+        gallery = (LinearLayout) findViewById(R.id.photo_gallery);
         layoutInflater = LayoutInflater.from(this);
     }
 }

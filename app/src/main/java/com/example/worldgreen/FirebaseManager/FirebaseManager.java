@@ -61,6 +61,8 @@ public class FirebaseManager {
         data.put("latitude", report.getLatitude());
         data.put("description", report.getDescription());
         data.put("numberOfPhotos", report.getNumberOfPhotos());
+        data.put("size", report.getSize());
+        data.put("isAccessibleByCar", report.isAccessibleByCar());
         ref.setValue(data)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -159,12 +161,14 @@ public class FirebaseManager {
                         final String ownerId = user.getKey();
                         final String reportKey = report.getKey();
                         final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                        final String size = report.child("size").getValue(String.class);
+                        final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
                         getPhotos(user.getKey(), reportKey, numberOfPhotos, new ReportPhotosCallback() {
                             @Override
                             public void onCallback(ArrayList<Bitmap> photos) {
                                 Log.d(TAG, "onCallback: on data change on callback photos called");
                                 if (photos.size() == numberOfPhotos) {
-                                    Report r = new Report(longitude, latitude, description, ownerId ,reportKey, photos);
+                                    Report r = new Report(longitude, latitude, description, ownerId ,reportKey, photos, size, isAccessibleByCar);
                                     reports.add(r);
                                     reportCallback.onCallback(reports);
                                 }
@@ -206,11 +210,13 @@ public class FirebaseManager {
                     final Double latitude = report.child("latitude").getValue(Double.class);
                     final String reportKey = report.getKey();
                     final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                    final String size = report.child("size").getValue(String.class);
+                    final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
                     getPhotos(userId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
                         @Override
                         public void onCallback(ArrayList<Bitmap> photos) {
                             if (photos.size() == numberOfPhotos) {
-                                Report r = new Report(longitude, latitude, description, userId, reportKey, photos);
+                                Report r = new Report(longitude, latitude, description, userId, reportKey, photos, size, isAccessibleByCar);
                                 reports.add(r);
                                 reportCallback.onCallback(reports);
                             }
@@ -248,11 +254,13 @@ public class FirebaseManager {
                         final int latitude = report.child("latitude").getValue(int.class);
                         final String description = report.child("description").getValue(String.class);
                         final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                        final String size = report.child("size").getValue(String.class);
+                        final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
                         getPhotos(creatorUserId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
                             @Override
                             public void onCallback(ArrayList<Bitmap> photos) {
                                 if (photos.size() == numberOfPhotos) {
-                                    Report r = new Report(longitude,latitude,description,creatorUserId,reportKey, photos);
+                                    Report r = new Report(longitude,latitude,description,creatorUserId,reportKey, photos, size, isAccessibleByCar);
                                     currentReportCallback.onCallback(r);
                                 }
                             }
