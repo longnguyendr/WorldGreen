@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
+import com.example.worldgreen.FirebaseManager.ReportCallback;
 import com.example.worldgreen.R;
 import com.example.worldgreen.DataModel.Report;
 
@@ -39,10 +40,8 @@ public class CreateReportActivity extends AppCompatActivity {
     static final String TAG = "CreateReportActivity";
     protected static final int CAMERA_REQUEST = 0;
     protected static final int GALLERY_REQUEST = 1;
+    private ArrayList<Bitmap> photos = new ArrayList<>();
 
-    RelativeLayout imageHolder;
-    Bitmap bitmap;
-    String selectedImagePath;
     LinearLayout gallery;
     LayoutInflater layoutInflater;
 
@@ -56,9 +55,9 @@ public class CreateReportActivity extends AppCompatActivity {
         layoutInflater = LayoutInflater.from(this);
 
 
-
         setupCreateButton();
         setupCameraButton();
+        setupGetButton();
     }
 
     void setupCreateButton() {
@@ -68,6 +67,16 @@ public class CreateReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createReport();
+            }
+        });
+    }
+
+    void setupGetButton() {
+        Button getButton = (Button) findViewById(R.id.create_report_get_all_reports);
+        getButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getReports();
             }
         });
     }
@@ -85,7 +94,7 @@ public class CreateReportActivity extends AppCompatActivity {
 
     void createReport() {
         EditText description = (EditText) findViewById(R.id.create_report_description);
-        Report report = new Report(123.1, 321.1, description.getText().toString());
+        Report report = new Report(123.1, 321.1, description.getText().toString(), photos);
         FirebaseManager manager = new FirebaseManager();
         try {
             manager.saveReport(report);
@@ -95,6 +104,19 @@ public class CreateReportActivity extends AppCompatActivity {
             Log.d(TAG, "createReport: " + e.getMessage());
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    void getReports() {
+        FirebaseManager manager = new FirebaseManager();
+        manager.getAllReports(new ReportCallback() {
+            @Override
+            public void onCallback(ArrayList<Report> reports) {
+                Log.d(TAG, "onCallback: reports: " + reports.size());
+                if (reports.size() > 0 ) {
+                    Log.d(TAG, "onCallback: rep 0 number of images (got it from bitmap array) " + reports.get(0).getPhotos().size());
+                }
+            }
+        });
     }
 
 
@@ -160,14 +182,9 @@ public class CreateReportActivity extends AppCompatActivity {
     private void cameraImage(Intent data) {
         Bundle extras = data.getExtras();
         Bitmap imageBitmap = (Bitmap) extras.get("data");
-//        imageView.setImageBitmap(imageBitmap);
+        photos.add(imageBitmap);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-//        ImageView img = new ImageView(this);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width,height/2);
-
         View view = layoutInflater.inflate(R.layout.create_report_item, gallery, false);
         ImageView imageView = view.findViewById(R.id.create_report_item_imageView);
         imageView.setImageBitmap(imageBitmap);
@@ -188,97 +205,6 @@ public class CreateReportActivity extends AppCompatActivity {
 
 
     //endregion
-
-
-//    TEST METHODS!
-
-//    void setupGetButton() {
-//        Button getButton = (Button) findViewById(R.id.create_report_get);
-//        getButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                getReport();
-//                FirebaseManager manager = new FirebaseManager();
-//                manager.getAllReports(new ReportCallback() {
-//                    @Override
-//                    public void onCallback(ArrayList<Report> reports) {
-//                        Log.d(TAG, "onCallback: REPORTS: " + reports.size());
-//                    }
-//                });
-//            }
-//        });
-//    }
-//
-//    void setupCreateEventButton() {
-//        Button createEventButton = (Button) findViewById(R.id.testCreateEvent);
-//        createEventButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final FirebaseManager manager = new FirebaseManager();
-//                manager.getAllReports(new ReportCallback() {
-//                    @Override
-//                    public void onCallback(ArrayList<Report> reports) {
-//                        Log.d(TAG, "onCallback: REPORTS SIZE" + reports.size());
-//                        Event e = new Event("i am test event", "test event", "13-02-2020", reports.get(0));
-//                        try {
-//                            manager.saveEvent(e);
-//                        } catch (Exception e1) {
-//                            e1.printStackTrace();
-//                        }
-//                    }
-//                });
-//            }
-//        });
-//    }
-//
-//    void setupGetEventsButton() {
-//        Log.d(TAG, "setupGetEventsButton: pressed");
-//        Button getEventsButton = (Button) findViewById(R.id.testGetEvents);
-//        getEventsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseManager manager = new FirebaseManager();
-//                manager.getAllEvents(new EventCallback() {
-//                    @Override
-//                    public void onCallback(ArrayList<Event> events) {
-//                        // update events method
-//                        Log.d(TAG, "onCallback: ALL EVENTS SIZE: " + events.size());
-//                    }
-//                });
-//                manager.getUsersEvents(FirebaseAuth.getInstance().getCurrentUser().getUid(), new EventCallback() {
-//                    @Override
-//                    public void onCallback(ArrayList<Event> events) {
-//                        Log.d(TAG, "onCallback: USERS EVENTS SIZE: " + events.size());
-//                    }
-//                });
-//            }
-//        });
-//
-//    }
-//
-//    void setupMyRep() {
-//        Button myRep = (Button) findViewById(R.id.testMyReports);
-//        myRep.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseManager manager = new FirebaseManager();
-//                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//                manager.getUsersReports(uid, new ReportCallback() {
-//                    @Override
-//                    public void onCallback(ArrayList<Report> reports) {
-//                        Log.d(TAG, "onCallback: myReports" + reports.size());
-//                    }
-//                });
-//            }
-//        });
-//    }
-//
-//    void getReport() {
-//        Intent i = new Intent(this, MyReportActivity.class);
-//        i.putExtra("allReports", true);
-//        startActivity(i);
-//    }
-//
 
 
 }
