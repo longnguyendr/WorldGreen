@@ -1,11 +1,22 @@
 package com.example.worldgreen.FirebaseManager;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.DataModel.Report;
+import com.example.worldgreen.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,7 +25,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,10 +46,9 @@ public class FirebaseManager {
 
     /**
      *
-     * @param report
+     * @param report which you want to save to the database
      * @throws Exception
      *
-     * Insert report which you want to save to the database
      */
     public void saveReport(Report report) throws Exception {
 
@@ -39,12 +56,11 @@ public class FirebaseManager {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = database.getReference(user.getUid()).child("reports").push();
-
         HashMap<String, Object> data = new HashMap<>();
         data.put("longitude", report.getLongitude());
         data.put("latitude", report.getLatitude());
         data.put("description", report.getDescription());
-
+        data.put("numberOfPhotos", report.getNumberOfPhotos());
         ref.setValue(data)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -58,15 +74,68 @@ public class FirebaseManager {
                         }
                     }
                 });
+
+
+        savePhotos(ref.getKey(), report.getPhotos());
     }
 
+    private void savePhotos(String reportKey, ArrayList<Bitmap> photos) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        for (int i = 0; i < photos.size(); i++) {
+            StorageReference ref = storage.getReference(user.getUid()).child("reports").child(reportKey).child(String.valueOf(i));
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            photos.get(i).compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            ref.putBytes(data)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG, "onSuccess: photo uploaded!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: FAILED UPLOAD PHOTO");
+                        }
+                    });
+        }
+    }
+
+    private void getPhotos(String uid, String repKey, int numberOfImages, final ReportPhotosCallback reportPhotosCallback) {
+        final ArrayList<Bitmap> photos = new ArrayList<>();
+        final long ONE_MEGABYTE = 1024 * 1024;
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        for (int i = 0; i < numberOfImages; i++) {
+            StorageReference ref = storage.getReference().child(uid).child("reports").child(repKey).child(String.valueOf(i));
+            ref.getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Log.d(TAG, "onSuccess: downloaded image");
+                            Bitmap img = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+                            photos.add(img);
+                            reportPhotosCallback.onCallback(photos);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: failed downloading image");
+                        }
+                    });
+        }
+    }
 
     /**
      *
-     * @param reportCallback
+     * @param reportCallback is called every time method get new photo of the report
      *
-     * onDataChange is asynchronous method, use ReportCallback for updating values.
+     *                       so if there is 3 reports and every report has 2 photos, reportCallback will be called 3*2 times
      */
 
     public void getAllReports(final ReportCallback reportCallback) {
@@ -84,13 +153,24 @@ public class FirebaseManager {
                     Log.d(TAG, "onDataChange: IN FOR");
                     Log.d(TAG, "USER: " + user.getKey());
                     for (DataSnapshot report : user.child("reports").getChildren()) {
-                        String description = report.child("description").getValue(String.class);
-                        Double longitude = report.child("longitude").getValue(Double.class);
-                        Double latitude = report.child("latitude").getValue(Double.class);
-                        String ownerId = user.getKey();
-                        String reportKey = report.getKey();
-                        Report r = new Report(longitude, latitude, description, ownerId ,reportKey);
-                        reports.add(r);
+                        final String description = report.child("description").getValue(String.class);
+                        final Double longitude = report.child("longitude").getValue(Double.class);
+                        final Double latitude = report.child("latitude").getValue(Double.class);
+                        final String ownerId = user.getKey();
+                        final String reportKey = report.getKey();
+                        final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                        getPhotos(user.getKey(), reportKey, numberOfPhotos, new ReportPhotosCallback() {
+                            @Override
+                            public void onCallback(ArrayList<Bitmap> photos) {
+                                Log.d(TAG, "onCallback: on data change on callback photos called");
+                                if (photos.size() == numberOfPhotos) {
+                                    Report r = new Report(longitude, latitude, description, ownerId ,reportKey, photos);
+                                    reports.add(r);
+                                    reportCallback.onCallback(reports);
+                                }
+                            }
+                        });
+
                     }
                 }
                 reportCallback.onCallback(reports);
@@ -104,11 +184,12 @@ public class FirebaseManager {
         rootRef.addListenerForSingleValueEvent(eventListener);
     }
 
+
     /**
      *
-     * @param userId
-     * @param reportCallback
-     * Insert users ID - function can be used (in future) also to see others users reports, not just mine.
+     * @param userId - id of user whose reports we want to fetch
+     * @param reportCallback - is called every time method get new photo of the report
+     *                       so if there is 3 reports and every report has 2 photos, reportCallback will be called 3*2 times
      */
 
     public void getUsersReports(final String userId, final ReportCallback reportCallback) {
@@ -120,12 +201,23 @@ public class FirebaseManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot report : dataSnapshot.child("reports").getChildren()) {
-                    String description = report.child("description").getValue(String.class);
-                    Double longitude = report.child("longitude").getValue(Double.class);
-                    Double latitude = report.child("latitude").getValue(Double.class);
-                    String reportKey = report.getKey();
-                    Report r = new Report(longitude, latitude, description, reportKey, userId);
-                    reports.add(r);
+                    final String description = report.child("description").getValue(String.class);
+                    final Double longitude = report.child("longitude").getValue(Double.class);
+                    final Double latitude = report.child("latitude").getValue(Double.class);
+                    final String reportKey = report.getKey();
+                    final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                    getPhotos(userId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
+                        @Override
+                        public void onCallback(ArrayList<Bitmap> photos) {
+                            if (photos.size() == numberOfPhotos) {
+                                Report r = new Report(longitude, latitude, description, userId, reportKey, photos);
+                                reports.add(r);
+                                reportCallback.onCallback(reports);
+                            }
+
+                        }
+                    });
+
                 }
                 reportCallback.onCallback(reports);
             }
@@ -139,6 +231,8 @@ public class FirebaseManager {
         rootRef.addListenerForSingleValueEvent(eventListener);
     }
 
+
+
     public void getCurrentReport(final String reportKey, final String creatorUserId, final CurrentReportCallback currentReportCallback) {
         Log.d(TAG, "getCurrentReport: IM in current report!");
         Log.d(TAG, "getCurrentReport: CREATOR ID: " + creatorUserId);
@@ -150,11 +244,19 @@ public class FirebaseManager {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot report : dataSnapshot.child("reports").getChildren()) {
                     if (reportKey.equals(report.getKey())) {
-                        int longitude = report.child("longitude").getValue(int.class);
-                        int latitude = report.child("latitude").getValue(int.class);
-                        String description = report.child("description").getValue(String.class);
-                        Report r = new Report(longitude,latitude,description,creatorUserId,reportKey);
-                        currentReportCallback.onCallback(r);
+                        final int longitude = report.child("longitude").getValue(int.class);
+                        final int latitude = report.child("latitude").getValue(int.class);
+                        final String description = report.child("description").getValue(String.class);
+                        final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                        getPhotos(creatorUserId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
+                            @Override
+                            public void onCallback(ArrayList<Bitmap> photos) {
+                                if (photos.size() == numberOfPhotos) {
+                                    Report r = new Report(longitude,latitude,description,creatorUserId,reportKey, photos);
+                                    currentReportCallback.onCallback(r);
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -204,9 +306,9 @@ public class FirebaseManager {
 
     /**
      *
-     * @param eventCallback
-     * eventCallback method is called every time method fetch new event (because of fetching also report object)
-     * So if there is 5 events, eventCallback will be called 5 times.
+     * @param eventCallback callBack waits until all photos of report are downloaded and then is called
+     *                      so if there are 3 events, callback should be called 3 times
+     *
      */
 
     public void getAllEvents(final EventCallback eventCallback) {
@@ -228,9 +330,11 @@ public class FirebaseManager {
                         getCurrentReport(reportKey, reportCreatorUid, new CurrentReportCallback() {
                             @Override
                             public void onCallback(Report report) {
-                                Event e = new Event(description,title,date,report);
-                                events.add(e);
-                                eventCallback.onCallback(events);
+                                if (report.getNumberOfPhotos() == report.getPhotos().size()) {
+                                    Event e = new Event(description,title,date,report);
+                                    events.add(e);
+                                    eventCallback.onCallback(events);
+                                }
                             }
                         });
                     }
@@ -248,11 +352,10 @@ public class FirebaseManager {
 
     /**
      *
-     * @param userId
-     * @param eventCallback
+     * @param userId id of user whose events we want to fetch
+     * @param eventCallback callBack waits until all photos of report are downloaded and then is called
+     *                      so if there are 3 events, callback should be called 3 times
      *
-     * eventCallback method is called every time method fetch new event (because of fetching also report object)
-     * So if there is 5 events, eventCallback will be called 5 times.
      */
     public void getUsersEvents(final String userId, final EventCallback eventCallback) {
         final ArrayList<Event> events = new ArrayList<>();
@@ -274,9 +377,11 @@ public class FirebaseManager {
                         @Override
                         public void onCallback(Report report) {
                             Log.d(TAG, "onCallback: I got report from callback!");
-                            Event e = new Event(description,title,date,report);
-                            events.add(e);
-                            eventCallback.onCallback(events);
+                            if (report.getNumberOfPhotos() == report.getPhotos().size()) {
+                                Event e = new Event(description,title,date,report);
+                                events.add(e);
+                                eventCallback.onCallback(events);
+                            }
                         }
                     });
                 }
