@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Events.MyEventActivity"></activity>
         <activity android:name=".Reports.MyReportActivity" />
         <activity android:name=".Donate.DonateActivity" />
         <activity android:name=".Events.AllEventActivity" />
