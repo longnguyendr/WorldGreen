@@ -1,11 +1,20 @@
 package com.example.worldgreen.Reports;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,21 +37,26 @@ import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
 import com.example.worldgreen.DataModel.Report;
 
+
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class CreateReportActivity extends AppCompatActivity {
 
-    static final String TAG = "CreateReportActivity";
-    protected static final int CAMERA_REQUEST = 0;
-    protected static final int GALLERY_REQUEST = 1;
-    private ArrayList<Bitmap> photos = new ArrayList<>();
-    Boolean isAccessibleByCar = null;
-    String size;
+    private static final String TAG = "CreateReportActivity";
+    private static final int CAMERA_REQUEST = 0;
+    private static final int GALLERY_REQUEST = 1;
 
-    LinearLayout gallery;
-    LayoutInflater layoutInflater;
+    private ArrayList<Bitmap> photos = new ArrayList<>();
+    private Boolean isAccessibleByCar = null;
+    private String size;
+    private LinearLayout gallery;
+    private LayoutInflater layoutInflater;
+    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +67,72 @@ public class CreateReportActivity extends AppCompatActivity {
         gallery = findViewById(R.id.photo_gallery);
         layoutInflater = LayoutInflater.from(this);
 
-
         setupCreateButton();
         setupCameraButton();
         setupSpinner();
-
+        getLocation();
     }
 
+    void getLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1000);
+        } else {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            String city = getAddress(location.getLatitude(), location.getLongitude());
+            Log.d(TAG, "onRequestPermissionsResult: " + "lat: " + location.getLatitude() + "lon: " + location.getLongitude());
+            Log.d(TAG, "getLocation: CITY: " + city);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1000:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocation();
+                } else {
+                    Toast.makeText(CreateReportActivity.this,"No permission to get location!", Toast.LENGTH_LONG).show();
+                }
+        }
+    }
+
+    private String getAddress(double lat, double lon) {
+        String cityName = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(lat,lon,10);
+            if (addresses.size() > 0) {
+                for (Address address : addresses) {
+                    if (address.getLocality() != null && address.getLocality().length() > 0) {
+                        cityName = address.getLocality();
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cityName;
+    }
+
+
+    //region UI methods
+    //----------------------------------------------------------------------------------------------
+
+    void resetUI() {
+        EditText description = findViewById(R.id.report_description);
+        description.setText(null);
+    }
+
+    //endregion
+
+    //region Setup methods
+    //----------------------------------------------------------------------------------------------
+
     void setupCreateButton() {
-        // image cannot be null!
         Button createButton = findViewById(R.id.save_report_button);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +143,16 @@ public class CreateReportActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    void setupCameraButton() {
+        Button cameraButton = findViewById(R.id.add_photo_button);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDialog();
             }
         });
     }
@@ -95,36 +176,34 @@ public class CreateReportActivity extends AppCompatActivity {
 
     }
 
-    void setupCameraButton() {
-        Button cameraButton = findViewById(R.id.add_photo_button);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDialog();
-            }
-        });
-    }
-
     public void onAccessibilityRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.accessibility_option_yes:
                 if (checked)
                     isAccessibleByCar = true;
-                    break;
+                break;
             case R.id.accessibility_option_no:
                 if (checked)
                     isAccessibleByCar = false;
-                    break;
+                break;
         }
     }
 
+    //endregion
 
+
+    //region Create report methods
+    //----------------------------------------------------------------------------------------------
 
     void createReport() throws CreateReportException {
 
         EditText description = findViewById(R.id.report_description);
+
+        if (location == null) {
+            throw new CreateReportException("No location.");
+        }
 
         if (photos.isEmpty()) {
             throw new CreateReportException("Take at least 1 picture, please.");
@@ -138,9 +217,9 @@ public class CreateReportActivity extends AppCompatActivity {
             throw new CreateReportException("Check if report is accessible by car, please.");
         }
 
-
-        Report report = new Report(123.1, 321.1, description.getText().toString(), photos, size, isAccessibleByCar);
+        Report report = new Report(location.getLongitude(), location.getLatitude(), description.getText().toString(), photos, size, isAccessibleByCar);
         FirebaseManager manager = new FirebaseManager();
+
         try {
             manager.saveReport(report);
             Toast.makeText(getApplicationContext(), "Report saved!", Toast.LENGTH_SHORT).show();
@@ -151,15 +230,21 @@ public class CreateReportActivity extends AppCompatActivity {
         }
     }
 
+    //endregion
 
-    void resetUI() {
-        EditText description = findViewById(R.id.report_description);
-        description.setText(null);
-    }
-
-    //region Camera methods
+    //region Add photo methods
     //----------------------------------------------------------------------------------------------
 
+
+    private void addPhoto(Bitmap photo) {
+        photos.add(photo);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        View view = layoutInflater.inflate(R.layout.create_report_item, gallery, false);
+        ImageView imageView = view.findViewById(R.id.create_report_item_imageView);
+        imageView.setImageBitmap(photo);
+        gallery.addView(view);
+    }
 
     private void startDialog() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
@@ -212,16 +297,20 @@ public class CreateReportActivity extends AppCompatActivity {
 
     private void openCamera(Intent data) {
         Bundle extras = data.getExtras();
-        Bitmap imageBitmap = (Bitmap) extras.get("data");
-        addPhoto(imageBitmap);
+        if (extras != null) {
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            addPhoto(imageBitmap);
+        }
     }
 
     private void openGallery(Intent data) {
         try {
             final Uri imageUri = data.getData();
-            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            addPhoto(selectedImage);
+            if (imageUri != null) {
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                addPhoto(selectedImage);
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -229,86 +318,7 @@ public class CreateReportActivity extends AppCompatActivity {
         }
     }
 
-    private void addPhoto(Bitmap photo) {
-        photos.add(photo);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        View view = layoutInflater.inflate(R.layout.create_report_item, gallery, false);
-        ImageView imageView = view.findViewById(R.id.create_report_item_imageView);
-        imageView.setImageBitmap(photo);
-        gallery.addView(view);
-    }
-
     //endregion
 
-
-//    TEST METHODS ejkejej junk
-
-    //
-//    void setupSaveEventButton() {
-//        Button saveEventBtn = (Button) findViewById(R.id.create_test_save_event);
-//        saveEventBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseManager manager = new FirebaseManager();
-//                Event e = new Event("test event 1", "I am test", "12-03-2019",testReport);
-//                try {
-//                    manager.saveEvent(e);
-//                } catch (Exception e1) {
-//                    Log.d(TAG, "onClick: save event error");
-//                    e1.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-//
-//    void setupGetEventsButton() {
-//        Button getEventBtn = (Button) findViewById(R.id.create_test_get_events);
-//        getEventBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseManager manager = new FirebaseManager();
-//                manager.getAllEvents(new EventCallback() {
-//                    @Override
-//                    public void onCallback(ArrayList<Event> events) {
-//                        Log.d(TAG, "onCallback: get event called");
-//                        Log.d(TAG, "onCallback: events size: " + events.size());
-//                        if (events.size() >= 1) {
-//                            Log.d(TAG, "onCallback: event photos size" + (events.size() - 1) + ". :" + events.get(events.size() - 1).getReport().getPhotos().size());
-//                        }
-//
-//                    }
-//                });
-//            }
-//        });
-//    }
-
-
-//    void setupGetButton() {
-//        Button getButton = (Button) findViewById(R.id.create_report_get_all_reports);
-//        getButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getReports();
-//            }
-//        });
-//    }
-//
-
-    //    void getReports() {
-//        FirebaseManager manager = new FirebaseManager();
-//        manager.getAllReports(new ReportCallback() {
-//            @Override
-//            public void onCallback(ArrayList<Report> reports) {
-//                Log.d(TAG, "onCallback: reports: " + reports.size());
-//                if (reports.size() >= 1 ) {
-////                    testReport = reports.get(1);
-//                    Log.d(TAG, "onCallback: rep " + reports.get(reports.size() -1 ) + " number of images (got it from bitmap array) " + reports.get(reports.size() - 1).getPhotos().size());
-//                    Log.d(TAG, "onCallback: rep " + reports.get(reports.size() -1 ) + " accessibility " + reports.get(reports.size() - 1).isAccessibleByCar());
-//                    Log.d(TAG, "onCallback: rep " + reports.get(reports.size() -1 ) + " size " + reports.get(reports.size() - 1).getSize());
-//                }
-//            }
-//        });
-//    }
 
 }

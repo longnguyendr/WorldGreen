@@ -12,12 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/create_report_get_all_reports"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="get"/>
-
         <HorizontalScrollView
             android:id="@+id/photos_scroll_view"
             android:layout_width="match_parent"
@@ -137,39 +131,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             />
-
-        <!--<Button-->
-        <!--android:id="@+id/create_report_get_all_reports"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="get"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/create_report_save_button"-->
-        <!--android:layout_marginTop="25dp"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--/>-->
-
-        <!--<Button-->
-        <!--android:id="@+id/create_test_save_event"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="save Event"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/create_report_get_all_reports"-->
-        <!--android:layout_marginTop="25dp"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--/>-->
-
-        <!--<Button-->
-        <!--android:id="@+id/create_test_get_events"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="get event"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/create_test_save_event"-->
-        <!--android:layout_marginTop="25dp"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--/>-->
 
     </android.support.constraint.ConstraintLayout>
 
