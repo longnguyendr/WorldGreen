@@ -1,5 +1,6 @@
 package com.example.worldgreen.Reports;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,6 +60,10 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
 
     @Override
     public void onItemClick(View view, int position) {
-
+        Intent i = new Intent(MyReportActivity.this, DetailReportActivity.class);
+        Log.d(TAG, "onItemClick: " + adapter.getItem(position));
+        Log.d(TAG, "onItemClick: " + myReports.get(position));
+        i.putExtra("report", myReports.get(position));
+        startActivity(i);
     }
 }

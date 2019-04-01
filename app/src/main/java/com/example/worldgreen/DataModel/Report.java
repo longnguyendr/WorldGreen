@@ -2,9 +2,11 @@ package com.example.worldgreen.DataModel;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 
-public class Report {
+public class Report implements Serializable {
 
     // long and lat are like this just for now
 
@@ -13,22 +15,25 @@ public class Report {
     private String description;
     private String creatorUid;
     private String key;
-    private ArrayList<Bitmap> photos;
+//    private ArrayList<ProxyBitmap> photos;
+    ArrayList<byte[]> photos;
+//    private byte[] byteArrayPhotos;
     private int numberOfPhotos;
     private String size;
     private boolean isAccessibleByCar;
 
-    public Report(double longitude, double latitude, String description, ArrayList<Bitmap> photos, String size, boolean isAccessibleByCar) {
+    public Report(double longitude, double latitude, String description, ArrayList<byte[]> photos, String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
         this.photos = photos;
-        this.numberOfPhotos = photos.size();
+//        this.photos = photos;
+//        this.numberOfPhotos = photos.size();
         this.size = size;
         this.isAccessibleByCar = isAccessibleByCar;
     }
 
-    public Report(double longitude, double latitude, String description, String creatorUid, String key, ArrayList<Bitmap> photos, String size, boolean isAccessibleByCar) {
+    public Report(double longitude, double latitude, String description, String creatorUid, String key, ArrayList<byte[]> photos, String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
@@ -62,10 +67,14 @@ public class Report {
         return key;
     }
 
-
-    public ArrayList<Bitmap> getPhotos() {
-        return photos;
-    }
+//
+//    public ArrayList<Bitmap> getPhotos() {
+//        ArrayList<Bitmap> bitmapPhotos = new ArrayList<>();
+//        for (ProxyBitmap photo: photos) {
+//            bitmapPhotos.add(photo.getBitmap());
+//        }
+//        return bitmapPhotos;
+//    }
 
 
     public int getNumberOfPhotos() {
@@ -78,5 +87,9 @@ public class Report {
 
     public boolean isAccessibleByCar() {
         return isAccessibleByCar;
+    }
+
+    public ArrayList<byte[]> getPhotos() {
+        return photos;
     }
 }

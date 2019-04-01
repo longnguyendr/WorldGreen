@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.worldgreen.DataModel.Event;
+import com.example.worldgreen.DataModel.ProxyBitmap;
 import com.example.worldgreen.DataModel.Report;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +24,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,18 +73,18 @@ public class FirebaseManager {
         savePhotos(ref.getKey(), report.getPhotos());
     }
 
-    private void savePhotos(String reportKey, ArrayList<Bitmap> photos) {
+    private void savePhotos(String reportKey, ArrayList<byte[]> photos) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         for (int i = 0; i < photos.size(); i++) {
             StorageReference ref = storage.getReference(user.getUid()).child("reports").child(reportKey).child(String.valueOf(i));
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            photos.get(i).compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] data = baos.toByteArray();
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            photos.get(i).compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            byte[] data = baos.toByteArray();
 
-            ref.putBytes(data)
+            ref.putBytes(photos.get(i))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -98,8 +100,8 @@ public class FirebaseManager {
         }
     }
 
-    private void getPhotos(String uid, String repKey, int numberOfImages, final ReportPhotosCallback reportPhotosCallback) {
-        final ArrayList<Bitmap> photos = new ArrayList<>();
+    private void getAllPhotos(String uid, String repKey, int numberOfImages, final ReportPhotosCallback reportPhotosCallback) {
+        final ArrayList<byte[]> photos = new ArrayList<>();
         final long ONE_MEGABYTE = 1024 * 1024;
         FirebaseStorage storage = FirebaseStorage.getInstance();
         for (int i = 0; i < numberOfImages; i++) {
@@ -109,8 +111,9 @@ public class FirebaseManager {
                         @Override
                         public void onSuccess(byte[] bytes) {
                             Log.d(TAG, "onSuccess: downloaded image");
-                            Bitmap img = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
-                            photos.add(img);
+//                            Bitmap img = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+//                            ProxyBitmap proxy = new ProxyBitmap(img);
+                            photos.add(bytes);
                             reportPhotosCallback.onCallback(photos);
                         }
                     })
@@ -122,6 +125,30 @@ public class FirebaseManager {
                     });
         }
     }
+
+//    private void getFirstPhoto(String uid, String repKey, final ReportPhotosCallback reportPhotosCallback) {
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        final long ONE_MEGABYTE = 1024 * 1024;
+//        StorageReference ref = storage.getReference().child(uid).child("reports").child(repKey).child("0"); // get first image
+//        ref.getBytes(ONE_MEGABYTE)
+//                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                    @Override
+//                    public void onSuccess(byte[] bytes) {
+////                        Bitmap img = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+////                        ProxyBitmap proxy = new ProxyBitmap(img);
+//                        ArrayList<byte[]> photos = new ArrayList();
+//                        photos.add(bytes);
+//                        reportPhotosCallback.onCallback(photos);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: cannot get photo");
+//                    }
+//                });
+//    }
+
 
     /**
      *
@@ -153,11 +180,11 @@ public class FirebaseManager {
                         final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
                         final String size = report.child("size").getValue(String.class);
                         final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
-                        getPhotos(user.getKey(), reportKey, numberOfPhotos, new ReportPhotosCallback() {
+                        getAllPhotos(user.getKey(), reportKey, numberOfPhotos, new ReportPhotosCallback() {
                             @Override
-                            public void onCallback(ArrayList<Bitmap> photos) {
-                                Log.d(TAG, "onCallback: on data change on callback photos called");
+                            public void onCallback(ArrayList<byte[]> photos) {
                                 if (photos.size() == numberOfPhotos) {
+                                    Log.d(TAG, "onCallback: on data change on callback photos called");
                                     Report r = new Report(longitude, latitude, description, ownerId ,reportKey, photos, size, isAccessibleByCar);
                                     reports.add(r);
                                     reportCallback.onCallback(r);
@@ -200,16 +227,14 @@ public class FirebaseManager {
                     final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
                     final String size = report.child("size").getValue(String.class);
                     final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
-                    getPhotos(userId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
+                    getAllPhotos(userId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
                         @Override
-                        public void onCallback(ArrayList<Bitmap> photos) {
+                        public void onCallback(ArrayList<byte[]> photos) {
                             if (photos.size() == numberOfPhotos) {
                                 Report r = new Report(longitude, latitude, description, userId, reportKey, photos, size, isAccessibleByCar);
                                 reports.add(r);
-
                                 reportCallback.onCallback(r);
                             }
-
                         }
                     });
 
@@ -244,9 +269,9 @@ public class FirebaseManager {
                         final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
                         final String size = report.child("size").getValue(String.class);
                         final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
-                        getPhotos(creatorUserId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
+                        getAllPhotos(creatorUserId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
                             @Override
-                            public void onCallback(ArrayList<Bitmap> photos) {
+                            public void onCallback(ArrayList<byte[]> photos) {
                                 if (photos.size() == numberOfPhotos) {
                                     Report r = new Report(longitude,latitude,description,creatorUserId,reportKey, photos, size, isAccessibleByCar);
                                     reportCallback.onCallback(r);

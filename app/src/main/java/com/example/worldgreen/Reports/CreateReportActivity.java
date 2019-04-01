@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Proxy;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -33,11 +34,13 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.worldgreen.DataModel.ProxyBitmap;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
 import com.example.worldgreen.DataModel.Report;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +54,7 @@ public class CreateReportActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
 
-    private ArrayList<Bitmap> photos = new ArrayList<>();
+    private ArrayList<byte[]> photos = new ArrayList<>();
     private Boolean isAccessibleByCar = null;
     private String size;
     private LinearLayout gallery;
@@ -237,7 +240,10 @@ public class CreateReportActivity extends AppCompatActivity {
 
 
     private void addPhoto(Bitmap photo) {
-        photos.add(photo);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        photos.add(data);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         View view = layoutInflater.inflate(R.layout.create_report_item, gallery, false);
