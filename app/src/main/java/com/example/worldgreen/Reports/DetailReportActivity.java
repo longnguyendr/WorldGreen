@@ -20,4 +20,6 @@ public class DetailReportActivity extends AppCompatActivity {
         gallery = (LinearLayout) findViewById(R.id.photo_gallery);
         layoutInflater = LayoutInflater.from(this);
     }
+
+    //tralalala
 }
