@@ -31,4 +31,18 @@
         app:layout_constraintRight_toRightOf="parent"
         />
 
+    <Button
+        android:id="@+id/test_create_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="create event"
+        />
+    <Button
+        android:id="@+id/test_get_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get event"
+        app:layout_constraintTop_toBottomOf="@id/test_create_event"
+        />
+
 </android.support.constraint.ConstraintLayout>

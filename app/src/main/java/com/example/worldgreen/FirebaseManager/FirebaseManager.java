@@ -25,6 +25,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Proxy;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -278,7 +279,7 @@ public class FirebaseManager {
         HashMap<String, Object> data = new HashMap<>();
         data.put("title", event.getTitle());
         data.put("description", event.getDescription());
-        data.put("date", event.getDate());
+        data.put("date", event.getDate().getTime());
         data.put("reportKey", event.getReport().getKey());
         data.put("reportCreatorUid", event.getReport().getCreatorUid());
 
@@ -318,7 +319,8 @@ public class FirebaseManager {
                         Log.d(TAG, "onDataChange: in event for loop");
                         final String title = event.child("title").getValue(String.class);
                         final String description = event.child("description").getValue(String.class);
-                        final String date = event.child("date").getValue(String.class);
+                        final Long timestamp = event.child("date").getValue(long.class);
+                        final Date date = new Date(timestamp);
                         String reportKey = event.child("reportKey").getValue(String.class);
                         String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
                         getCurrentReport(reportKey, reportCreatorUid, new ReportCallback() {
@@ -362,7 +364,8 @@ public class FirebaseManager {
 
                     final String title = event.child("title").getValue(String.class);
                     final String description = event.child("description").getValue(String.class);
-                    final String date = event.child("date").getValue(String.class);
+                    final Long timestamp = event.child("date").getValue(long.class);
+                    final Date date = new Date(timestamp);
                     String reportKey = event.child("reportKey").getValue(String.class);
                     String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
                     Log.d(TAG, "onDataChange: calling getCurrentReport");

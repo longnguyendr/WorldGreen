@@ -1,12 +1,15 @@
 package com.example.worldgreen.DataModel;
 
+import java.sql.Date;
+import java.text.DateFormat;
+
 public class Event {
     String description;
     String title;
-    String date;
+    Date date;
     Report report;
 
-    public Event(String description, String title, String date, Report report) {
+    public Event(String description, String title, Date date, Report report) {
         this.description = description;
         this.title = title;
         this.date = date;
@@ -29,11 +32,11 @@ public class Event {
         this.title = title;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
