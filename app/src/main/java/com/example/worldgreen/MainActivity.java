@@ -8,7 +8,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.view.Menu;
 
+import com.example.worldgreen.Donate.DonateActivity;
+import com.example.worldgreen.Events.AllEventActivity;
+import com.example.worldgreen.Reports.AllReportActivity;
 import com.example.worldgreen.Users.LoginActivity;
 import com.example.worldgreen.Reports.CreateReportActivity;
 import com.example.worldgreen.Users.ProfileActivity;
@@ -18,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnSignOut, btnCreateReport, btnViewProfile;
+    private Button btnSignOut, btnCreateReport, btnViewProfile, btnViewAllReport, btnViewAllEvent, btnDonate;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
 
@@ -45,9 +49,12 @@ public class MainActivity extends AppCompatActivity {
         //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
         btnSignOut = findViewById(R.id.Logout_button);
-
+        btnViewAllReport = findViewById(R.id.view_all_report_button);
+        btnViewAllEvent = findViewById(R.id.view_all_event_button);
+        btnDonate = findViewById(R.id.donate_button);
+        btnCreateReport = findViewById(R.id.create_report_button);
+        btnViewProfile = findViewById(R.id.profile_button);
 
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,19 +65,34 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        btnCreateReport = findViewById(R.id.create_report_button);
         btnCreateReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, CreateReportActivity.class ));
             }
         });
-        btnViewProfile = findViewById(R.id.profile_button);
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            }
+        });
+        btnViewAllEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AllEventActivity.class));
+            }
+        });
+        btnViewAllReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AllReportActivity.class));
+            }
+        });
+        btnDonate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, DonateActivity.class));
             }
         });
     }
