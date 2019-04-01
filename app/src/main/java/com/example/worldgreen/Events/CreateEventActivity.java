@@ -13,15 +13,16 @@ import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.MainActivity;
 import com.example.worldgreen.R;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class CreateEventActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateEventActivity";
     private Button btnCreateEvent;
-    Report report;
+    Report report ;
+    Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +38,11 @@ public class CreateEventActivity extends AppCompatActivity {
         btnCreateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                report = (Report) getIntent().getSerializableExtra("report");
+
                 FirebaseManager manager = new FirebaseManager();
-                Event e = new Event("pushing some data from create event" ,"test CreateEvent", "4/1/2019",report);
+                Event e = new Event("pushing some data from create event" ,"test CreateEvent", new Date(System.currentTimeMillis()), report);
 
                 try {
                     manager.saveEvent(e);
