@@ -15,16 +15,20 @@ public class Report {
     private String key;
     private ArrayList<Bitmap> photos;
     private int numberOfPhotos;
+    private String size;
+    private boolean isAccessibleByCar;
 
-    public Report(double longitude, double latitude, String description, ArrayList<Bitmap> photos) {
+    public Report(double longitude, double latitude, String description, ArrayList<Bitmap> photos, String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
         this.photos = photos;
         this.numberOfPhotos = photos.size();
+        this.size = size;
+        this.isAccessibleByCar = isAccessibleByCar;
     }
 
-    public Report(double longitude, double latitude, String description, String creatorUid, String key, ArrayList<Bitmap> photos) {
+    public Report(double longitude, double latitude, String description, String creatorUid, String key, ArrayList<Bitmap> photos, String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
@@ -32,6 +36,8 @@ public class Report {
         this.key = key;
         this.photos = photos;
         this.numberOfPhotos = photos.size();
+        this.size = size;
+        this.isAccessibleByCar = isAccessibleByCar;
     }
 
 
@@ -47,43 +53,30 @@ public class Report {
         return description;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getCreatorUid() {
         return creatorUid;
     }
 
-    public void setCreatorUid(String creatorUid) {
-        this.creatorUid = creatorUid;
-    }
 
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
 
     public ArrayList<Bitmap> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(ArrayList<Bitmap> photos) {
-        this.photos = photos;
-    }
 
     public int getNumberOfPhotos() {
         return numberOfPhotos;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public boolean isAccessibleByCar() {
+        return isAccessibleByCar;
     }
 }

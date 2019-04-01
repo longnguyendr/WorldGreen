@@ -34,6 +34,11 @@
     <string name="donate_button">Donate</string>
     <string name="view_all_report_button">View All Report</string>
     <string name="view_all_event_button">View All Event</string>
+    <string-array name="report_size">
+        <item>Bag</item>
+        <item>Wheelbarrow</item>
+        <item>Car</item>
+    </string-array>
     <string name="menu_signout">Sign Out</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

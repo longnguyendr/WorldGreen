@@ -1,19 +1,12 @@
 package com.example.worldgreen.FirebaseManager;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.DataModel.Report;
-import com.example.worldgreen.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,14 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,6 +51,8 @@ public class FirebaseManager {
         data.put("latitude", report.getLatitude());
         data.put("description", report.getDescription());
         data.put("numberOfPhotos", report.getNumberOfPhotos());
+        data.put("size", report.getSize());
+        data.put("isAccessibleByCar", report.isAccessibleByCar());
         ref.setValue(data)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -159,21 +151,22 @@ public class FirebaseManager {
                         final String ownerId = user.getKey();
                         final String reportKey = report.getKey();
                         final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                        final String size = report.child("size").getValue(String.class);
+                        final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
                         getPhotos(user.getKey(), reportKey, numberOfPhotos, new ReportPhotosCallback() {
                             @Override
                             public void onCallback(ArrayList<Bitmap> photos) {
                                 Log.d(TAG, "onCallback: on data change on callback photos called");
                                 if (photos.size() == numberOfPhotos) {
-                                    Report r = new Report(longitude, latitude, description, ownerId ,reportKey, photos);
+                                    Report r = new Report(longitude, latitude, description, ownerId ,reportKey, photos, size, isAccessibleByCar);
                                     reports.add(r);
-                                    reportCallback.onCallback(reports);
+                                    reportCallback.onCallback(r);
                                 }
                             }
                         });
 
                     }
                 }
-                reportCallback.onCallback(reports);
             }
 
             @Override
@@ -188,8 +181,7 @@ public class FirebaseManager {
     /**
      *
      * @param userId - id of user whose reports we want to fetch
-     * @param reportCallback - is called every time method get new photo of the report
-     *                       so if there is 3 reports and every report has 2 photos, reportCallback will be called 3*2 times
+     * @param
      */
 
     public void getUsersReports(final String userId, final ReportCallback reportCallback) {
@@ -200,26 +192,28 @@ public class FirebaseManager {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot report : dataSnapshot.child("reports").getChildren()) {
+                for (final DataSnapshot report : dataSnapshot.child("reports").getChildren()) {
                     final String description = report.child("description").getValue(String.class);
                     final Double longitude = report.child("longitude").getValue(Double.class);
                     final Double latitude = report.child("latitude").getValue(Double.class);
                     final String reportKey = report.getKey();
                     final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                    final String size = report.child("size").getValue(String.class);
+                    final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
                     getPhotos(userId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
                         @Override
                         public void onCallback(ArrayList<Bitmap> photos) {
                             if (photos.size() == numberOfPhotos) {
-                                Report r = new Report(longitude, latitude, description, userId, reportKey, photos);
+                                Report r = new Report(longitude, latitude, description, userId, reportKey, photos, size, isAccessibleByCar);
                                 reports.add(r);
-                                reportCallback.onCallback(reports);
+
+                                reportCallback.onCallback(r);
                             }
 
                         }
                     });
 
                 }
-                reportCallback.onCallback(reports);
             }
 
             @Override
@@ -233,7 +227,7 @@ public class FirebaseManager {
 
 
 
-    public void getCurrentReport(final String reportKey, final String creatorUserId, final CurrentReportCallback currentReportCallback) {
+    public void getCurrentReport(final String reportKey, final String creatorUserId, final ReportCallback reportCallback) {
         Log.d(TAG, "getCurrentReport: IM in current report!");
         Log.d(TAG, "getCurrentReport: CREATOR ID: " + creatorUserId);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -248,12 +242,14 @@ public class FirebaseManager {
                         final int latitude = report.child("latitude").getValue(int.class);
                         final String description = report.child("description").getValue(String.class);
                         final int numberOfPhotos = report.child("numberOfPhotos").getValue(int.class);
+                        final String size = report.child("size").getValue(String.class);
+                        final boolean isAccessibleByCar = report.child("isAccessibleByCar").getValue(boolean.class);
                         getPhotos(creatorUserId, reportKey, numberOfPhotos, new ReportPhotosCallback() {
                             @Override
                             public void onCallback(ArrayList<Bitmap> photos) {
                                 if (photos.size() == numberOfPhotos) {
-                                    Report r = new Report(longitude,latitude,description,creatorUserId,reportKey, photos);
-                                    currentReportCallback.onCallback(r);
+                                    Report r = new Report(longitude,latitude,description,creatorUserId,reportKey, photos, size, isAccessibleByCar);
+                                    reportCallback.onCallback(r);
                                 }
                             }
                         });
@@ -312,6 +308,7 @@ public class FirebaseManager {
      */
 
     public void getAllEvents(final EventCallback eventCallback) {
+        Log.d(TAG, "getAllEvents: called");
         final ArrayList<Event> events = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rootRef = database.getReference();
@@ -321,25 +318,24 @@ public class FirebaseManager {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot user : dataSnapshot.getChildren()) {
                     for (DataSnapshot event : user.child("events").getChildren()) {
-
+                        Log.d(TAG, "onDataChange: in event for loop");
                         final String title = event.child("title").getValue(String.class);
                         final String description = event.child("description").getValue(String.class);
                         final String date = event.child("date").getValue(String.class);
                         String reportKey = event.child("reportKey").getValue(String.class);
                         String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
-                        getCurrentReport(reportKey, reportCreatorUid, new CurrentReportCallback() {
+                        getCurrentReport(reportKey, reportCreatorUid, new ReportCallback() {
                             @Override
                             public void onCallback(Report report) {
                                 if (report.getNumberOfPhotos() == report.getPhotos().size()) {
                                     Event e = new Event(description,title,date,report);
-                                    events.add(e);
-                                    eventCallback.onCallback(events);
+                                    Log.d(TAG, "onCallback: EVENT CALLBACK called");
+                                    eventCallback.onCallback(e);
                                 }
                             }
                         });
                     }
                 }
-                eventCallback.onCallback(events);
             }
 
             @Override
@@ -373,19 +369,19 @@ public class FirebaseManager {
                     String reportKey = event.child("reportKey").getValue(String.class);
                     String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
                     Log.d(TAG, "onDataChange: calling getCurrentReport");
-                    getCurrentReport(reportKey, reportCreatorUid, new CurrentReportCallback() {
+                    getCurrentReport(reportKey, reportCreatorUid, new ReportCallback() {
                         @Override
                         public void onCallback(Report report) {
                             Log.d(TAG, "onCallback: I got report from callback!");
                             if (report.getNumberOfPhotos() == report.getPhotos().size()) {
                                 Event e = new Event(description,title,date,report);
                                 events.add(e);
-                                eventCallback.onCallback(events);
+                                eventCallback.onCallback(e);
                             }
                         }
                     });
                 }
-                eventCallback.onCallback(events);
+//                eventCallback.onCallback(events);
             }
 
             @Override

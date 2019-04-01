@@ -17,6 +17,8 @@ class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.ViewHolde
     private ArrayList<Report> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private View.OnClickListener onItemClickListener;
+
 
     // data is passed into the constructor
     ReportListAdapter(Context context, ArrayList<Report> data) {
@@ -34,8 +36,8 @@ class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.ViewHolde
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String animal = mData.get(position).getDescription();
-        holder.myTextView.setText(animal);
+        String dump = mData.get(position).getDescription();
+        holder.myTextView.setText(dump);
     }
 
     // total number of rows
