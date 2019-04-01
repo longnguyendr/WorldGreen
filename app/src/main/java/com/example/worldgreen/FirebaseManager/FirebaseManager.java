@@ -79,11 +79,7 @@ public class FirebaseManager {
 
         for (int i = 0; i < photos.size(); i++) {
             StorageReference ref = storage.getReference(user.getUid()).child("reports").child(reportKey).child(String.valueOf(i));
-
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            photos.get(i).compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//            byte[] data = baos.toByteArray();
-
+            
             ref.putBytes(photos.get(i))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -125,30 +121,6 @@ public class FirebaseManager {
                     });
         }
     }
-
-//    private void getFirstPhoto(String uid, String repKey, final ReportPhotosCallback reportPhotosCallback) {
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        final long ONE_MEGABYTE = 1024 * 1024;
-//        StorageReference ref = storage.getReference().child(uid).child("reports").child(repKey).child("0"); // get first image
-//        ref.getBytes(ONE_MEGABYTE)
-//                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//                    @Override
-//                    public void onSuccess(byte[] bytes) {
-////                        Bitmap img = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
-////                        ProxyBitmap proxy = new ProxyBitmap(img);
-//                        ArrayList<byte[]> photos = new ArrayList();
-//                        photos.add(bytes);
-//                        reportPhotosCallback.onCallback(photos);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d(TAG, "onFailure: cannot get photo");
-//                    }
-//                });
-//    }
-
 
     /**
      *
@@ -406,7 +378,6 @@ public class FirebaseManager {
                         }
                     });
                 }
-//                eventCallback.onCallback(events);
             }
 
             @Override
