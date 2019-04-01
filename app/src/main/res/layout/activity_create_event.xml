@@ -6,18 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".Events.CreateEventActivity">
     <EditText
-        android:id="@+id/create_event_input"
+        android:id="@+id/create_event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-
+        android:hint="Title"
+        />
+    <EditText
+        android:id="@+id/create_event_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/create_event_title"
+        android:layout_marginTop="10dp"
+        android:hint="Description"
         />
     <Button
         android:id="@+id/create_event_button"
         android:text="@string/create_event_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/create_event_input"
+        app:layout_constraintTop_toBottomOf="@id/create_event_description"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />

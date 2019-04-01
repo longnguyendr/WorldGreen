@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
@@ -20,9 +21,9 @@ import java.text.SimpleDateFormat;
 public class CreateEventActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateEventActivity";
+    private EditText inputTitle, inputDescription;
     private Button btnCreateEvent;
     Report report ;
-    Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
     void CreateEventButton() {
         btnCreateEvent = findViewById(R.id.create_event_button);
+        inputTitle = findViewById(R.id.create_event_title);
+        inputDescription = findViewById(R.id.create_event_description);
+
         btnCreateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,7 +46,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 report = (Report) getIntent().getSerializableExtra("report");
 
                 FirebaseManager manager = new FirebaseManager();
-                Event e = new Event("pushing some data from create event" ,"test CreateEvent", new Date(System.currentTimeMillis()), report);
+                Event e = new Event(inputDescription.getText().toString() ,inputTitle.getText().toString(), new Date(System.currentTimeMillis()), report);
 
                 try {
                     manager.saveEvent(e);
