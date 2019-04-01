@@ -21,5 +21,5 @@ public class DetailReportActivity extends AppCompatActivity {
         layoutInflater = LayoutInflater.from(this);
     }
 
-    //tralalala
+    //tralalala abrakadabra
 }
