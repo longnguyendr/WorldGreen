@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.DataModel.Report;
+import com.example.worldgreen.Events.CreateEventActivity;
 import com.example.worldgreen.FirebaseManager.EventCallback;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
@@ -67,7 +68,9 @@ public class DetailReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                Intent i = new Intent(DetailReportActivity.this, CreateE)
+                Intent i = new Intent(DetailReportActivity.this, CreateEventActivity.class);
+                i.putExtra("report", report);
+                startActivity(i);
 
 //                Event e = new Event("tes event","current date", new Date(System.currentTimeMillis()) , report);
 //                try {
