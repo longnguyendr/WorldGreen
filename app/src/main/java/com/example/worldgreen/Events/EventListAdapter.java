@@ -19,15 +19,15 @@ class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>
     private LayoutInflater mInflater;
 
     // data is passed into the constructor
-    EventListAdapter(Context context, ArrayList<Event> data) {
+    EventListAdapter(Context context, ArrayList<Event> eventData) {
         this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        this.mData = eventData;
     }
 
     // inflates the row layout from xml when needed
     @Override
     public EventListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.report_row, parent, false);
+        View view = mInflater.inflate(R.layout.event_row, parent, false);
         return new EventListAdapter.ViewHolder(view);
     }
 
@@ -52,7 +52,7 @@ class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.report_row);
+            myTextView = itemView.findViewById(R.id.event_row);
         }
     }
 

@@ -9,6 +9,7 @@ import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.FirebaseManager.EventCallback;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,10 @@ public class MyEventActivity extends AppCompatActivity {
     final static String TAG = "MyEventActivity";
     EventListAdapter adapter;
     RecyclerView recyclerView;
+    final ArrayList<Event> myEvent = new ArrayList<Event>();
+    FirebaseAuth mAuth;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,12 +28,16 @@ public class MyEventActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.events_list_recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new EventListAdapter(getApplicationContext(), myEvent);
+        recyclerView.setAdapter(adapter);
+
         FirebaseManager manager = new FirebaseManager();
-        manager.getAllEvents(new EventCallback() {
+        mAuth = FirebaseAuth.getInstance();
+        manager.getUsersEvents(mAuth.getCurrentUser().getUid(), new EventCallback() {
             @Override
-            public void onCallback(ArrayList<Event> events) {
-                adapter = new EventListAdapter(getApplicationContext(), events);
-                recyclerView.setAdapter(adapter);
+            public void onCallback(Event events) {
+                myEvent.add(events);
+                adapter.notifyDataSetChanged();
             }
         });
     }
