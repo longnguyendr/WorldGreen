@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Reports.MyReportActivity"></activity>
+        <activity android:name=".Events.MyEventActivity"></activity>
+        <activity android:name=".Reports.MyReportActivity" />
         <activity android:name=".Donate.DonateActivity" />
         <activity android:name=".Events.AllEventActivity" />
         <activity android:name=".Users.ProfileActivity" />
