@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.FirebaseManager.EventCallback;
@@ -18,7 +19,6 @@ public class AllEventActivity extends AppCompatActivity {
     EventListAdapter adapter;
     RecyclerView recyclerView;
     final ArrayList<Event> allEvent = new ArrayList<Event>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,5 +38,7 @@ public class AllEventActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+
+
     }
 }
