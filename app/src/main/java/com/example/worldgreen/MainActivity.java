@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnSignOut, btnCreateReport, btnViewProfile, btnViewAllReport, btnViewAllEvent, btnDonate, btnCreateEvent;
+    private Button btnSignOut, btnCreateReport, btnViewProfile, btnViewAllReport, btnViewAllEvent, btnDonate;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
 
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         btnDonate = findViewById(R.id.donate_button);
         btnCreateReport = findViewById(R.id.create_report_button);
         btnViewProfile = findViewById(R.id.profile_button);
-        btnCreateEvent = findViewById(R.id.create_event_button);
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,12 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CreateReportActivity.class ));
             }
         });
-        btnCreateEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, CreateEventActivity.class));
-            }
-        });
+
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
