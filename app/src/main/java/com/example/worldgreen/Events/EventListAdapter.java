@@ -17,6 +17,7 @@ import java.util.List;
 class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
     private ArrayList<Event> mData;
     private LayoutInflater mInflater;
+    private itemClickListener onItemClickListener;
 
     // data is passed into the constructor
     EventListAdapter(Context context, ArrayList<Event> eventData) {
@@ -53,8 +54,22 @@ class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.event_row);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onItemClickListener != null ) {
+                        onItemClickListener.onItemClick(view, getAdapterPosition()) ;
+                    }
+                }
+            });
         }
+
+    }
+    public void setItemClickListener (itemClickListener clickListener) {
+        onItemClickListener = clickListener;
     }
 
-
+    public interface itemClickListener {
+        void onItemClick(View view , int position);
+    }
 }

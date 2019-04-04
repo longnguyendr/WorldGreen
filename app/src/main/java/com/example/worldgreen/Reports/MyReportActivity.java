@@ -8,8 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.example.worldgreen.DataModel.Event;
-import com.example.worldgreen.FirebaseManager.EventCallback;
 import com.example.worldgreen.FirebaseManager.ReportCallback;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
@@ -53,6 +51,7 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
             @Override
             public void onCallback(Report report) {
                 myReports.add(report);
+
                 adapter.notifyDataSetChanged();
             }
         });

@@ -1,9 +1,10 @@
 package com.example.worldgreen.DataModel;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.text.DateFormat;
 
-public class Event {
+public class Event implements Serializable {
     String description;
     String title;
     Date date;

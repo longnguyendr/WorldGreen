@@ -1,10 +1,12 @@
 package com.example.worldgreen.Events;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.FirebaseManager.EventCallback;
@@ -25,9 +27,23 @@ public class AllEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_event);
 
-        recyclerView = (RecyclerView) findViewById(R.id.events_list_recycleView);
+        prepareView();
+        getAllUsersEvent();
+    }
+
+    protected void prepareView() {
+        recyclerView = findViewById(R.id.events_list_recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+    protected void getAllUsersEvent() {
         adapter = new EventListAdapter(getApplicationContext(), allEvent);
+        adapter.setItemClickListener(new EventListAdapter.itemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                startActivity(new Intent(AllEventActivity.this, DetailEventActivity.class)
+                        .putExtra("allEvent",allEvent.get(position)));
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         FirebaseManager manager = new FirebaseManager();
@@ -38,7 +54,5 @@ public class AllEventActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
-
-
     }
 }
