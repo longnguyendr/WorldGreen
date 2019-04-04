@@ -220,7 +220,7 @@ public class CreateReportActivity extends AppCompatActivity {
             throw new CreateReportException("Check if report is accessible by car, please.");
         }
 
-        Report report = new Report(location.getLongitude(), location.getLatitude(), description.getText().toString(), photos, size, isAccessibleByCar);
+        Report report = new Report(location.getLongitude(), location.getLatitude(), description.getText().toString(), photos, photos.size() , size, isAccessibleByCar);
         FirebaseManager manager = new FirebaseManager();
 
         try {

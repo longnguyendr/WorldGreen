@@ -22,13 +22,14 @@ public class Report implements Serializable {
     private String size;
     private boolean isAccessibleByCar;
 
-    public Report(double longitude, double latitude, String description, ArrayList<byte[]> photos, String size, boolean isAccessibleByCar) {
+    public Report(double longitude, double latitude, String description, ArrayList<byte[]> photos,int numberOfPhotos , String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
         this.photos = photos;
 //        this.photos = photos;
 //        this.numberOfPhotos = photos.size();
+        this.numberOfPhotos = numberOfPhotos;
         this.size = size;
         this.isAccessibleByCar = isAccessibleByCar;
     }
