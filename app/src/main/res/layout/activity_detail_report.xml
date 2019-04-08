@@ -45,4 +45,11 @@
         app:layout_constraintTop_toBottomOf="@id/test_create_event"
         />
 
+    <Button
+        android:id="@+id/sharebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share"
+         />
+
 </android.support.constraint.ConstraintLayout>

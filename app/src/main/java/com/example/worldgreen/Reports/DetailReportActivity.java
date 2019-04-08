@@ -29,15 +29,35 @@ public class DetailReportActivity extends AppCompatActivity {
     LinearLayout gallery;
     LayoutInflater layoutInflater;
     Report report;
+    Button share;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_report);
 
+        share = (Button) findViewById(R.id.sharebutton);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, String.valueOf(report));
+                Log.d(TAG, "------onCreate: report: " + report.getDescription());
+                Intent myIntent = new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = "Your body here";
+                String shareSub = "Your subject here";
+                myIntent.putExtra(Intent.EXTRA_SUBJECT,report.getDescription());
+                myIntent.putExtra(Intent.EXTRA_TEXT,report.getPhotos());
+                startActivity(Intent.createChooser(myIntent,"Share Using"));
+            }
+        });
+
         report = (Report) getIntent().getSerializableExtra("report");
 
         if (report != null) {
+            Log.d(TAG, "-----data from report" + report);
             Log.d(TAG, "onCreate: report: " + report.getDescription());
             if (report.getPhotos() != null) {
                 Log.d(TAG, "onCreate: photo array size " + report.getPhotos().size());
