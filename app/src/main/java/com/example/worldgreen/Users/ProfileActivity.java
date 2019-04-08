@@ -13,6 +13,7 @@ import com.example.worldgreen.Reports.MyReportActivity;
 public class ProfileActivity extends AppCompatActivity {
 
     private Button btnViewMyReport, btnViewMyEvent;
+    private View Test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(ProfileActivity.this, MyEventActivity.class));
             }
         });
+
+
     }
 }
