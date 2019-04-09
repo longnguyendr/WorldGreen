@@ -3,7 +3,6 @@ package com.example.worldgreen.Events;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +12,9 @@ import com.example.worldgreen.DataModel.Event;
 
 import com.example.worldgreen.R;
 import com.example.worldgreen.Reports.DetailReportActivity;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 public class DetailEventActivity extends AppCompatActivity {
     final static String TAG = "DetailEventActivity";
@@ -61,7 +63,10 @@ public class DetailEventActivity extends AppCompatActivity {
 
             titleTextView.setText(event.getTitle());
             descriptionTextView.setText(event.getDescription());
-            dateTextView.setText(event.getDate().toString());
+
+            Date date = new Date(event.getTimestamp().getTime());
+            String formattedDate = SimpleDateFormat.getDateTimeInstance().format(date);
+            dateTextView.setText(formattedDate);
 
         }
     }

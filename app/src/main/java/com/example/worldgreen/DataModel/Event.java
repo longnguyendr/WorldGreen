@@ -2,18 +2,18 @@ package com.example.worldgreen.DataModel;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.text.DateFormat;
+import java.sql.Timestamp;
 
 public class Event implements Serializable {
     String description;
     String title;
-    Date date;
+    Timestamp timestamp;
     Report report;
 
-    public Event(String description, String title, Date date, Report report) {
+    public Event(String description, String title, Timestamp timestamp, Report report) {
         this.description = description;
         this.title = title;
-        this.date = date;
+        this.timestamp = timestamp;
         this.report = report;
     }
 
@@ -33,12 +33,12 @@ public class Event implements Serializable {
         this.title = title;
     }
 
-    public Date getDate() {
-        return date;
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Report getReport() {
