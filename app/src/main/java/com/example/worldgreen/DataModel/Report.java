@@ -27,8 +27,7 @@ public class Report implements Serializable {
         this.latitude = latitude;
         this.description = description;
         this.photos = photos;
-//        this.photos = photos;
-//        this.numberOfPhotos = photos.size();
+        this.numberOfPhotos = photos.size();
         this.size = size;
         this.isAccessibleByCar = isAccessibleByCar;
     }
@@ -66,16 +65,6 @@ public class Report implements Serializable {
     public String getKey() {
         return key;
     }
-
-//
-//    public ArrayList<Bitmap> getPhotos() {
-//        ArrayList<Bitmap> bitmapPhotos = new ArrayList<>();
-//        for (ProxyBitmap photo: photos) {
-//            bitmapPhotos.add(photo.getBitmap());
-//        }
-//        return bitmapPhotos;
-//    }
-
 
     public int getNumberOfPhotos() {
         return numberOfPhotos;

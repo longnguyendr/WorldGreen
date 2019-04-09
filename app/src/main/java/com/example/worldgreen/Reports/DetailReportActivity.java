@@ -30,7 +30,7 @@ import java.util.Calendar;
 
 public class DetailReportActivity extends AppCompatActivity {
 
-    static final String TAG = "DetailReprotActivity";
+    static final String TAG = "DetailReportActivity";
     private LinearLayout gallery;
     private LayoutInflater layoutInflater;
     Report report;
@@ -49,9 +49,6 @@ public class DetailReportActivity extends AppCompatActivity {
         setupButtons();
         displayData();
     }
-
-
-
 
     private void setupButtons() {
         final FirebaseManager manager = new FirebaseManager();
