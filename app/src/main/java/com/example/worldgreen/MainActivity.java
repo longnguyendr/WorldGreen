@@ -13,6 +13,7 @@ import android.view.Menu;
 import com.example.worldgreen.Donate.DonateActivity;
 import com.example.worldgreen.Events.AllEventActivity;
 import com.example.worldgreen.Events.CreateEventActivity;
+import com.example.worldgreen.Maps.MapsActivity;
 import com.example.worldgreen.Reports.AllReportActivity;
 import com.example.worldgreen.Users.LoginActivity;
 import com.example.worldgreen.Reports.CreateReportActivity;
@@ -23,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnSignOut, btnCreateReport, btnViewProfile, btnViewAllReport, btnViewAllEvent, btnDonate;
+    private Button btnSignOut, btnCreateReport, btnViewProfile, btnViewAllReport, btnViewAllEvent, btnDonate, btnMaps;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        btnMaps = findViewById(R.id.maps_button);
         btnSignOut = findViewById(R.id.Logout_button);
         btnViewAllReport = findViewById(R.id.view_all_report_button);
         btnViewAllEvent = findViewById(R.id.view_all_event_button);
@@ -94,6 +95,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, DonateActivity.class));
+            }
+        });
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, MapsActivity.class));
             }
         });
     }

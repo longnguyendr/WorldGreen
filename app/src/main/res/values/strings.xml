@@ -50,4 +50,6 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="btn_view_my_report">My report</string>
     <string name="btn_view_my_event">My Event</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="btn_maps">Maps</string>
 </resources>
