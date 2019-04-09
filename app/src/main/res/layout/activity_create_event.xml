@@ -20,6 +20,7 @@
         android:layout_marginTop="10dp"
         android:hint="Description"
         />
+
     <Button
         android:id="@+id/create_event_button"
         android:text="@string/create_event_button"
