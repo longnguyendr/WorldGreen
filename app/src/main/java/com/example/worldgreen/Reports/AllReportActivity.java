@@ -1,48 +1,54 @@
 package com.example.worldgreen.Reports;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Report;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.FirebaseManager.ReportCallback;
+import com.example.worldgreen.MapManager.PermissionUtils;
 import com.example.worldgreen.Maps.OnMapAndViewReadyListener;
 import com.example.worldgreen.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class AllReportActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener,
+public class AllReportActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMapClickListener,
-        OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener  {
+        OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener,
+        GoogleMap.OnMyLocationButtonClickListener,
+        ActivityCompat.OnRequestPermissionsResultCallback {
     final static String TAG = "AllReportActivity";
     ReportListAdapter adapter;
     RecyclerView recyclerView;
     final ArrayList<Report> allReport = new ArrayList<>();
-
-    private static final LatLng BRISBANE = new LatLng(-27.47093, 153.0235);
-    private static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-    private static final LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
-    private static final LatLng ADELAIDE = new LatLng(-34.92873, 138.59995);
-    private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
     private GoogleMap mMap;
-    /**
-     * Keeps track of the selected marker.
-     */
+    /**Keeps track of the selected marker.**/
     private Marker mSelectedMarker;
-
+    private boolean mPermissionDenied = false;
+    private LocationListener locationListener;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +59,19 @@ public class AllReportActivity extends FragmentActivity implements GoogleMap.OnM
                 .findFragmentById(R.id.map);
         new OnMapAndViewReadyListener(mapFragment, this);
 
-        getAllUsersReport();
     }
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
 
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        getAllUsersReport();
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(this);
+        mMap.setOnMyLocationButtonClickListener(this);
+        enableMyLocation();
+
+    }
     protected void getAllUsersReport () {
         FirebaseManager manager = new FirebaseManager();
         manager.getAllReports(new ReportCallback() {
@@ -63,76 +79,20 @@ public class AllReportActivity extends FragmentActivity implements GoogleMap.OnM
             public void onCallback(Report report) {
                 allReport.add(report);
                 for(Report i : allReport) {
-                    Log.d(TAG,"------------------UID : "+ i.getCreatorUid());
-                    Log.d(TAG,"------------------descriptions : "+ i.getDescription());
-                    Log.d(TAG,"------------------longitude : "+ i.getLongitude());
-                    Log.d(TAG,"------------------latitude : "+ i.getLatitude());
                     LatLng Locations = new LatLng(i.getLatitude(), i.getLongitude());
-                    mMap.addMarker(new MarkerOptions()
-                            .position(Locations)
-                            .title(i.getDescription())
-                            .snippet("Success"));
+                    addMarkersToMap(Locations , i);
+
                 }
 
             }
         });
     }
 
-    @Override
-    public void onMapReady(GoogleMap map) {
-        mMap = map;
-
-        // Hide the zoom controls.
-        mMap.getUiSettings().setZoomControlsEnabled(false);
-
-        // Add lots of markers to the map.
-        addMarkersToMap();
-
-        // Set listener for marker click event.  See the bottom of this class for its behavior.
-        mMap.setOnMarkerClickListener(this);
-
-        // Set listener for map click event.  See the bottom of this class for its behavior.
-        mMap.setOnMapClickListener(this);
-
-        // Override the default content description on the view, for accessibility mode.
-        // Ideally this string would be localized.
-        map.setContentDescription("Demo showing how to close the info window when the currently"
-                + " selected marker is re-tapped.");
-        LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(PERTH)
-                .include(SYDNEY)
-                .include(ADELAIDE)
-                .include(BRISBANE)
-                .include(MELBOURNE)
-                .build();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
-    }
-
-    private void addMarkersToMap() {
-        mMap.addMarker(new MarkerOptions()
-                .position(BRISBANE)
-                .title("Brisbane")
-                .snippet("Population: 2,074,200"));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(SYDNEY)
-                .title("Sydney")
-                .snippet("Population: 4,627,300"));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(MELBOURNE)
-                .title("Melbourne")
-                .snippet("Population: 4,137,400"));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(PERTH)
-                .title("Perth")
-                .snippet("Population: 1,738,800"));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(ADELAIDE)
-                .title("Adelaide")
-                .snippet("Population: 1,213,000"));
+    private void addMarkersToMap(LatLng Locations ,Report i) {
+                mMap.addMarker(new MarkerOptions()
+                        .position(Locations)
+                        .title(i.getTitle())
+                        .snippet(i.getDescription()));
     }
 
     @Override
@@ -160,5 +120,89 @@ public class AllReportActivity extends FragmentActivity implements GoogleMap.OnM
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur.
         return false;
+    }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
+            checkLocationListener();
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,20, locationListener, null);
+        }
+    }
+    private void checkLocationListener() {
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                LatLng CurrentCoord = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+    }
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
+        }
+
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Enable the my location layer if the permission has been granted.
+            enableMyLocation();
+        } else {
+            // Display the missing permission error dialog when the fragments resume.
+            mPermissionDenied = true;
+        }
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mPermissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            mPermissionDenied = false;
+        }
+    }
+
+    /**
+     * Displays a dialog with error message explaining that the location permission is missing.
+     */
+    private void showMissingPermissionError() {
+        PermissionUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 }
