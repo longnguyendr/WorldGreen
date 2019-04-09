@@ -10,13 +10,13 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Proxy;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,9 +32,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.worldgreen.DataModel.ProxyBitmap;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
 import com.example.worldgreen.DataModel.Report;
@@ -53,13 +53,15 @@ public class CreateReportActivity extends AppCompatActivity {
     private static final String TAG = "CreateReportActivity";
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
+    private static final int LOCATION_REQUEST = 2;
 
     private ArrayList<byte[]> photos = new ArrayList<>();
     private Boolean isAccessibleByCar = null;
     private String size;
     private LinearLayout gallery;
     private LayoutInflater layoutInflater;
-    Location location;
+    private LocationListener locationListener;
+    private Location mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,29 +73,63 @@ public class CreateReportActivity extends AppCompatActivity {
         layoutInflater = LayoutInflater.from(this);
 
         setupCreateButton();
+        setupUpdateLocationButton();
         setupCameraButton();
         setupSpinner();
         getLocation();
     }
 
+
+    //region Location
+    //----------------------------------------------------------------------------------------------
+
     void getLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1000);
-        } else {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            String city = getAddress(location.getLatitude(), location.getLongitude());
-            Log.d(TAG, "onRequestPermissionsResult: " + "lat: " + location.getLatitude() + "lon: " + location.getLongitude());
-            Log.d(TAG, "getLocation: CITY: " + city);
+        setupLocationListener();
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Log.d(TAG, "getLocation: showing fine access reason");
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST);
+            }
         }
+        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+    }
+
+    private void setupLocationListener() {
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mLocation = location;
+                Log.d(TAG, "onLocationChanged: location changed!: " + location.getLongitude() + " " + location.getLatitude());
+                updateLocationTextView(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 1000:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case LOCATION_REQUEST:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLocation();
                 } else {
                     Toast.makeText(CreateReportActivity.this,"No permission to get location!", Toast.LENGTH_LONG).show();
@@ -121,13 +157,24 @@ public class CreateReportActivity extends AppCompatActivity {
         return cityName;
     }
 
+    //endregion
+
 
     //region UI methods
     //----------------------------------------------------------------------------------------------
 
-    void resetUI() {
+    private void resetUI() {
         EditText description = findViewById(R.id.report_description);
         description.setText(null);
+    }
+
+    private void updateLocationTextView(Location location) {
+        TextView locationTextView = findViewById(R.id.location_textView);
+        String address = getAddress(location.getLatitude(), location.getLongitude());
+        String latStr = Double.toString(location.getLatitude());
+        String lonStr = Double.toString(location.getLongitude());
+
+        locationTextView.setText("Lat: " + latStr + " Lon: " + lonStr + "address: " + address);
     }
 
     //endregion
@@ -146,6 +193,17 @@ public class CreateReportActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    void setupUpdateLocationButton() {
+        Button updateLocationButton = findViewById(R.id.update_location);
+        updateLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: update btn clicked");
+                getLocation();
             }
         });
     }
@@ -203,8 +261,9 @@ public class CreateReportActivity extends AppCompatActivity {
     void createReport() throws CreateReportException {
 
         EditText description = findViewById(R.id.report_description);
+        EditText title = findViewById(R.id.report_title);
 
-        if (location == null) {
+        if (mLocation == null) {
             throw new CreateReportException("No location.");
         }
 
@@ -216,11 +275,16 @@ public class CreateReportActivity extends AppCompatActivity {
             throw new CreateReportException("Write a longer description, please.");
         }
 
+        if (title.length() < 5 || title.length() > 20) {
+            throw new CreateReportException("Title has to have at least 5 characters and max 20 characters");
+        }
+
         if (isAccessibleByCar == null) {
             throw new CreateReportException("Check if report is accessible by car, please.");
         }
 
-        Report report = new Report(location.getLongitude(), location.getLatitude(), description.getText().toString(), photos, photos.size() , size, isAccessibleByCar);
+        Report report = new Report(mLocation.getLongitude(), mLocation.getLatitude(), description.getText().toString(), title.getText().toString(), photos, photos.size() , size, isAccessibleByCar);
+
         FirebaseManager manager = new FirebaseManager();
 
         try {
@@ -305,7 +369,9 @@ public class CreateReportActivity extends AppCompatActivity {
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            addPhoto(imageBitmap);
+            if (imageBitmap != null) {
+                addPhoto(imageBitmap);
+            }
         }
     }
 

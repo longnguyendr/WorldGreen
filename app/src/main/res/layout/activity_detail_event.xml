@@ -6,4 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".Events.DetailEventActivity">
 
+    <TextView
+        android:id="@+id/event_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event title"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="25dp"
+        />
+
+    <TextView
+        android:id="@+id/event_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="event description"
+        app:layout_constraintTop_toBottomOf="@id/event_title"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/event_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="28 March 2019"
+        app:layout_constraintTop_toBottomOf="@id/event_description"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <Button
+        android:id="@+id/show_report_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="show report"
+        app:layout_constraintTop_toTopOf="@+id/event_date"
+        android:layout_marginTop="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
 </android.support.constraint.ConstraintLayout>
