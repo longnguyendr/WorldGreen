@@ -36,7 +36,7 @@ class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.ViewHolde
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String dump = mData.get(position).getDescription();
+        String dump = mData.get(position).getTitle();
         holder.myTextView.setText(dump);
     }
 

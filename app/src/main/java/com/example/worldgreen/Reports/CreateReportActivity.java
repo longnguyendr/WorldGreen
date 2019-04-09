@@ -261,6 +261,7 @@ public class CreateReportActivity extends AppCompatActivity {
     void createReport() throws CreateReportException {
 
         EditText description = findViewById(R.id.report_description);
+        EditText title = findViewById(R.id.report_title);
 
         if (mLocation == null) {
             throw new CreateReportException("No location.");
@@ -274,11 +275,15 @@ public class CreateReportActivity extends AppCompatActivity {
             throw new CreateReportException("Write a longer description, please.");
         }
 
+        if (title.length() < 5 || title.length() > 20) {
+            throw new CreateReportException("Title has to have at least 5 characters and max 20 characters");
+        }
+
         if (isAccessibleByCar == null) {
             throw new CreateReportException("Check if report is accessible by car, please.");
         }
 
-        Report report = new Report(mLocation.getLongitude(), mLocation.getLatitude(), description.getText().toString(), photos, photos.size() , size, isAccessibleByCar);
+        Report report = new Report(mLocation.getLongitude(), mLocation.getLatitude(), description.getText().toString(), title.getText().toString(), photos, photos.size() , size, isAccessibleByCar);
 
         FirebaseManager manager = new FirebaseManager();
 

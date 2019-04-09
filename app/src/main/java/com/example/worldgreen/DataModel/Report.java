@@ -13,6 +13,7 @@ public class Report implements Serializable {
     private double longitude;
     private double latitude;
     private String description;
+    private String title;
     private String creatorUid;
     private String key;
     ArrayList<byte[]> photos;
@@ -20,10 +21,11 @@ public class Report implements Serializable {
     private String size;
     private boolean isAccessibleByCar;
 
-    public Report(double longitude, double latitude, String description, ArrayList<byte[]> photos,int numberOfPhotos , String size, boolean isAccessibleByCar) {
+    public Report(double longitude, double latitude, String description, String title, ArrayList<byte[]> photos,int numberOfPhotos , String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
+        this.title = title;
         this.photos = photos;
         this.numberOfPhotos = numberOfPhotos;
         this.numberOfPhotos = photos.size();
@@ -31,10 +33,11 @@ public class Report implements Serializable {
         this.isAccessibleByCar = isAccessibleByCar;
     }
 
-    public Report(double longitude, double latitude, String description, String creatorUid, String key, ArrayList<byte[]> photos, String size, boolean isAccessibleByCar) {
+    public Report(double longitude, double latitude, String description, String title, String creatorUid, String key, ArrayList<byte[]> photos, String size, boolean isAccessibleByCar) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;
+        this.title = title;
         this.creatorUid = creatorUid;
         this.key = key;
         this.photos = photos;
@@ -79,5 +82,9 @@ public class Report implements Serializable {
 
     public ArrayList<byte[]> getPhotos() {
         return photos;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

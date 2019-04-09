@@ -39,7 +39,7 @@
             />
 
         <EditText
-            android:id="@+id/report_description"
+            android:id="@+id/report_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/add_photo_button"
@@ -47,6 +47,19 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            />
+
+        <EditText
+            android:id="@+id/report_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/report_title"
+            android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             />
