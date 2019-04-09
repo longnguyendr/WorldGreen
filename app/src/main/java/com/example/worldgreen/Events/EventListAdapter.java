@@ -35,7 +35,7 @@ class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(EventListAdapter.ViewHolder holder, int position) {
-        String animal = mData.get(position).getDescription();
+        String animal = mData.get(position).getTitle();
         holder.myTextView.setText(animal);
     }
 

@@ -41,7 +41,7 @@ public class AllEventActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 startActivity(new Intent(AllEventActivity.this, DetailEventActivity.class)
-                        .putExtra("allEvent",allEvent.get(position)));
+                        .putExtra("event",allEvent.get(position)));
             }
         });
         recyclerView.setAdapter(adapter);

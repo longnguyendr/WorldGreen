@@ -42,7 +42,7 @@ public class MyEventActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 Intent i = new Intent(MyEventActivity.this, DetailEventActivity.class);
-                i.putExtra("myEvent", myEvent.get(position));
+                i.putExtra("event", myEvent.get(position));
                 startActivity(i);
             }
         });
