@@ -10,8 +10,10 @@ import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
 
+import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.R;
 import com.example.worldgreen.Reports.DetailReportActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -27,6 +29,7 @@ public class DetailEventActivity extends AppCompatActivity {
 
         event = (Event) getIntent().getSerializableExtra("event");
         setupShowReportButton();
+        setupGoingButton();
         updateUI();
     }
 
@@ -49,6 +52,17 @@ public class DetailEventActivity extends AppCompatActivity {
         });
     }
 
+    private void setupGoingButton() {
+        Button goingButton = findViewById(R.id.going_button);
+        goingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseManager firebaseManager = new FirebaseManager();
+                firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event);
+            }
+        });
+    }
+
     //endregion
 
 
@@ -61,7 +75,7 @@ public class DetailEventActivity extends AppCompatActivity {
             TextView descriptionTextView = findViewById(R.id.event_description);
             TextView dateTextView = findViewById(R.id.event_date);
 
-            titleTextView.setText(event.getTitle());
+            titleTextView.setText(event.getTitle() + " " + event.amIParticipating());
             descriptionTextView.setText(event.getDescription());
 
             Date date = new Date(event.getTimestamp().getTime());

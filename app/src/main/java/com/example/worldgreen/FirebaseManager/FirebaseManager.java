@@ -317,6 +317,23 @@ public class FirebaseManager {
                 });
     }
 
+    private void addUserToEvent(FirebaseUser user, final Event event) throws Exception {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(user.getUid());
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("email", user.getEmail());
+
+        ref.setValue(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onComplete: ADDED");
+                    }
+                });
+    }
+
     /**
      *
      * @param eventCallback callBack waits until all photos of report are downloaded and then is called
@@ -326,7 +343,6 @@ public class FirebaseManager {
 
     public void getAllEvents(final EventCallback eventCallback) {
         Log.d(TAG, "getAllEvents: called");
-        final ArrayList<Event> events = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rootRef = database.getReference();
 
@@ -335,20 +351,30 @@ public class FirebaseManager {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot user : dataSnapshot.getChildren()) {
                     for (DataSnapshot event : user.child("events").getChildren()) {
+
                         Log.d(TAG, "onDataChange: in event for loop");
+
                         final String title = event.child("title").getValue(String.class);
                         final String description = event.child("description").getValue(String.class);
                         final Long longTimestamp = event.child("date").getValue(long.class);
+                        final int participantsNumber = numberOfParticipants(event);
+                        final boolean amIParticipating = amIParticipating(event, FirebaseAuth.getInstance().getCurrentUser().getUid());
                         final Timestamp timestamp = new Timestamp(longTimestamp);
+                        final String creatorId = user.getKey();
+                        final String eventId = event.getKey();
+
+
                         String reportKey = event.child("reportKey").getValue(String.class);
                         String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
                         getCurrentReport(reportKey, reportCreatorUid, new ReportCallback() {
                             @Override
                             public void onCallback(Report report) {
                                 if (report.getNumberOfPhotos() == report.getPhotos().size()) {
-                                    Event e = new Event(description,title,timestamp,report);
+
+                                    Event e = new Event(description, creatorId, eventId, amIParticipating, participantsNumber, title,timestamp,report);
                                     Log.d(TAG, "onCallback: EVENT CALLBACK called");
                                     eventCallback.onCallback(e);
+
                                 }
                             }
                         });
@@ -362,6 +388,26 @@ public class FirebaseManager {
             }
         };
         rootRef.addListenerForSingleValueEvent(eventListener);
+    }
+
+    private boolean amIParticipating(DataSnapshot event, String myId) {
+
+        for (DataSnapshot participants : event.child("participants").getChildren()) {
+            if (myId.equals(participants.getKey())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int numberOfParticipants(DataSnapshot event) {
+        int counter = 0;
+
+        for (DataSnapshot participants: event.child("participants").getChildren()) {
+            counter ++;
+        }
+
+        return counter;
     }
 
     /**
@@ -384,7 +430,12 @@ public class FirebaseManager {
                     final String title = event.child("title").getValue(String.class);
                     final String description = event.child("description").getValue(String.class);
                     final Long longTimestamp = event.child("date").getValue(long.class);
+                    final int participantsNumber = numberOfParticipants(event);
+                    final boolean amIParticipating = amIParticipating(event, FirebaseAuth.getInstance().getCurrentUser().getUid());
+
                     final Timestamp timestamp = new Timestamp(longTimestamp);
+                    final String eventId = event.getKey();
+
                     String reportKey = event.child("reportKey").getValue(String.class);
                     String reportCreatorUid = event.child("reportCreatorUid").getValue(String.class);
                     Log.d(TAG, "onDataChange: calling getCurrentReport");
@@ -392,8 +443,10 @@ public class FirebaseManager {
                         @Override
                         public void onCallback(Report report) {
                             Log.d(TAG, "onCallback: I got report from callback!");
+
                             if (report.getNumberOfPhotos() == report.getPhotos().size()) {
-                                Event e = new Event(description,title,timestamp,report);
+
+                                Event e = new Event(description, userId, eventId, amIParticipating, participantsNumber, title,timestamp,report);
                                 events.add(e);
                                 eventCallback.onCallback(e);
                             }
@@ -408,6 +461,23 @@ public class FirebaseManager {
             }
         };
         rootRef.addListenerForSingleValueEvent(eventListener);
+    }
+
+    public void goingToEvent(FirebaseUser user, Event event) {
+
+        try {
+            addUserToEvent(user, event);
+            Log.d(TAG, "goingToEvent: EVERYTHING OK");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "goingToEvent: ERROR: " + e.getMessage());
+        }
+
+    }
+
+
+    private void addEventToUser(String userId, String eventId) {
+
     }
 
     //endregion
