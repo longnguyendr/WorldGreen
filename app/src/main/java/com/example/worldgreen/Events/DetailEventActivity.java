@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.worldgreen.DataModel.Event;
 
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
+import com.example.worldgreen.FirebaseManager.FirebaseManagerCompleteMessage;
 import com.example.worldgreen.R;
 import com.example.worldgreen.Reports.DetailReportActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,11 +55,32 @@ public class DetailEventActivity extends AppCompatActivity {
 
     private void setupGoingButton() {
         Button goingButton = findViewById(R.id.going_button);
+
+
+
         goingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 FirebaseManager firebaseManager = new FirebaseManager();
-                firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event);
+
+                if (event.amIParticipating()) {
+                    firebaseManager.removeFromGoing(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
+                        @Override
+                        public void onCallback(String completeMessage) {
+                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+
+                    firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
+                        @Override
+                        public void onCallback(String completeMessage) {
+                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
             }
         });
     }

@@ -20,8 +20,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -317,23 +315,6 @@ public class FirebaseManager {
                 });
     }
 
-    private void addUserToEvent(FirebaseUser user, final Event event) throws Exception {
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(user.getUid());
-
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("email", user.getEmail());
-
-        ref.setValue(data)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "onComplete: ADDED");
-                    }
-                });
-    }
-
     /**
      *
      * @param eventCallback callBack waits until all photos of report are downloaded and then is called
@@ -349,6 +330,7 @@ public class FirebaseManager {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: called");
                 for (DataSnapshot user : dataSnapshot.getChildren()) {
                     for (DataSnapshot event : user.child("events").getChildren()) {
 
@@ -425,6 +407,7 @@ public class FirebaseManager {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: called");
                 for (DataSnapshot event : dataSnapshot.child("events").getChildren()) {
 
                     final String title = event.child("title").getValue(String.class);
@@ -463,22 +446,125 @@ public class FirebaseManager {
         rootRef.addListenerForSingleValueEvent(eventListener);
     }
 
-    public void goingToEvent(FirebaseUser user, Event event) {
+    public void goingToEvent(FirebaseUser user, Event event, final FirebaseManagerCompleteMessage message){
 
-        try {
-            addUserToEvent(user, event);
-            Log.d(TAG, "goingToEvent: EVERYTHING OK");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(TAG, "goingToEvent: ERROR: " + e.getMessage());
-        }
+        addUserToEvent(user, event, new FirebaseManagerCompleteMessage() {
+            @Override
+            public void onCallback(String completeMessage) {
+                message.onCallback(completeMessage);
+            }
+        });
+
+        addEventToUser(user.getUid(), event, new FirebaseManagerCompleteMessage() {
+            @Override
+            public void onCallback(String completeMessage) {
+                message.onCallback(completeMessage);
+            }
+        });
 
     }
 
+    public void removeFromGoing(FirebaseUser user, Event event, final FirebaseManagerCompleteMessage message) {
 
-    private void addEventToUser(String userId, String eventId) {
+        removeUserFromEvent(user, event, new FirebaseManagerCompleteMessage() {
+            @Override
+            public void onCallback(String completeMessage) {
+                message.onCallback(completeMessage);
+            }
+        });
+
+        removeEventFromUser(user.getUid(), event, new FirebaseManagerCompleteMessage() {
+            @Override
+            public void onCallback(String completeMessage) {
+                message.onCallback(completeMessage);
+            }
+        });
 
     }
+
+    private void removeUserFromEvent(FirebaseUser user, Event event, final FirebaseManagerCompleteMessage completeMessage) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(user.getUid());
+
+        ref.removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        completeMessage.onCallback("Success remove user from event");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        completeMessage.onCallback(e.getMessage());
+                    }
+                });
+    }
+
+    private void removeEventFromUser(String userId, Event event, final FirebaseManagerCompleteMessage completeMessage) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(userId).child("participating").child(event.getId());
+        ref.removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        completeMessage.onCallback("Success remove event from user");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        completeMessage.onCallback(e.getMessage());
+                    }
+                });
+    }
+
+    private void addEventToUser(String userId, Event event, final FirebaseManagerCompleteMessage completeMessage){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(userId).child("participating").child(event.getId());
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("creatorId", event.getCreatorId());
+        ref.setValue(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        completeMessage.onCallback("Success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        completeMessage.onCallback(e.getMessage());
+                    }
+                });
+
+    }
+
+    private void addUserToEvent(FirebaseUser user, final Event event, final FirebaseManagerCompleteMessage completeMessage){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(user.getUid());
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("email", user.getEmail());
+
+        ref.setValue(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        completeMessage.onCallback("Success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        completeMessage.onCallback(e.getMessage());
+                    }
+                });
+    }
+
 
     //endregion
 
