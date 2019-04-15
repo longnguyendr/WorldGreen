@@ -40,13 +40,35 @@
         app:layout_constraintRight_toRightOf="parent"
         />
 
+    <TextView
+        android:id="@+id/people_going"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="people going:"
+        app:layout_constraintTop_toBottomOf="@id/event_date"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
     <Button
         android:id="@+id/show_report_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="show report"
-        app:layout_constraintTop_toTopOf="@+id/event_date"
+        app:layout_constraintTop_toBottomOf="@+id/people_going"
         android:layout_marginTop="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <Button
+        android:id="@+id/going_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Going"
+        app:layout_constraintTop_toBottomOf="@+id/show_report_button"
+        android:layout_marginTop="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />
