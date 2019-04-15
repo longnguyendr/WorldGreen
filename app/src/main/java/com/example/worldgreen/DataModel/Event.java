@@ -5,14 +5,14 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Event implements Serializable {
-    String description;
-    String creatorId;
-    String id;
-    String title;
-    Timestamp timestamp;
-    Report report;
-    int participantsNumber;
-    boolean amIParticipating;
+    private String description;
+    private String creatorId;
+    private String id;
+    private String title;
+    private Timestamp timestamp;
+    private Report report;
+    private int participantsNumber;
+    private boolean amIParticipating;
 
     public Event(String description, String creatorId, String id, boolean amIParticipating, int participantsNumber, String title, Timestamp timestamp, Report report) {
         this.description = description;
@@ -68,7 +68,4 @@ public class Event implements Serializable {
         return amIParticipating;
     }
 
-    public void setAmIParticipating(boolean amIParticipating) {
-        this.amIParticipating = amIParticipating;
-    }
 }

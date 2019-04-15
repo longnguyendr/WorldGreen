@@ -96,9 +96,11 @@ public class DetailEventActivity extends AppCompatActivity {
             TextView titleTextView = findViewById(R.id.event_title);
             TextView descriptionTextView = findViewById(R.id.event_description);
             TextView dateTextView = findViewById(R.id.event_date);
+            TextView participatingTextView = findViewById(R.id.people_going);
 
             titleTextView.setText(event.getTitle() + " " + event.amIParticipating());
             descriptionTextView.setText(event.getDescription());
+            participatingTextView.setText("People going: " + event.getParticipantsNumber());
 
             Date date = new Date(event.getTimestamp().getTime());
             String formattedDate = SimpleDateFormat.getDateTimeInstance().format(date);
