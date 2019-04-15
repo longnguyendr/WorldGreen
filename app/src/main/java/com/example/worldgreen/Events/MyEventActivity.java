@@ -14,6 +14,7 @@ import com.example.worldgreen.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyEventActivity extends AppCompatActivity {
     final static String TAG = "MyEventActivity";
@@ -36,6 +37,14 @@ public class MyEventActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+
+    /**
+     *  When event is added to participants in event, event is updated and onDataChange in FirebaseManager is called
+     *  -> also onCallback is called again. That means that onCallback we have new event.
+     *  But this event is already in allEvent arrayList - the only difference between new one and old one is participants
+     *  if even already exist (we have in array list event with same id) we will replace this event.
+     */
+
     protected void getUsersEvent () {
         adapter = new EventListAdapter(getApplicationContext(), myEvent);
         adapter.setItemClickListener(new EventListAdapter.itemClickListener() {
@@ -52,10 +61,38 @@ public class MyEventActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         manager.getUsersEvents(mAuth.getCurrentUser().getUid(), new EventCallback() {
             @Override
-            public void onCallback(Event events) {
-                myEvent.add(events);
+            public void onCallback(Event event) {
+                if (eventExists(event)) {
+                    replaceEvent(event);
+                } else {
+                    myEvent.add(event);
+                }
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+
+    private boolean eventExists(Event newEvent) {
+        for (Event event: myEvent) {
+            if (event.getId().equals(newEvent.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void replaceEvent(Event newEvent) {
+
+        List<Event> toRemove = new ArrayList<Event>();
+        List<Event> toAdd = new ArrayList<Event>();
+        for (Event event: myEvent) {
+            if (event.getId().equals(newEvent.getId())) {
+                toRemove.add(event);
+                toAdd.add(newEvent);
+            }
+        }
+        myEvent.removeAll(toRemove);
+        myEvent.addAll(toAdd);
     }
 }
