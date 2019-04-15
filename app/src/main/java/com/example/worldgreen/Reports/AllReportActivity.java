@@ -31,24 +31,27 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import com.example.worldgreen.MapManager.MapManager;
 import java.util.ArrayList;
+import java.util.logging.LogManager;
 
 public class AllReportActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMapClickListener,
+        GoogleMap.OnInfoWindowClickListener,
         OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener,
         GoogleMap.OnMyLocationButtonClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
     final static String TAG = "AllReportActivity";
     ReportListAdapter adapter;
     RecyclerView recyclerView;
-    final ArrayList<Report> allReport = new ArrayList<>();
+    ArrayList<Report> allReport = new ArrayList<Report>();
     private GoogleMap mMap;
     /**Keeps track of the selected marker.**/
     private Marker mSelectedMarker;
     private boolean mPermissionDenied = false;
     private LocationListener locationListener;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +137,8 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
+            MapManager mManager = new MapManager();
+//            mManager.checkLocationListener();
             checkLocationListener();
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,20, locationListener, null);
@@ -204,5 +209,13 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        mSelectedMarker = marker;
+        Toast.makeText(AllReportActivity.this, "on inforWindow Click", Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, "marker position" + marker.getPosition());
+//        startActivity(new Intent(this, DetailReportActivity.class));
     }
 }
