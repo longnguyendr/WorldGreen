@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.worldgreen.MapManager.MapManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.LogManager;
 
 public class AllReportActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
@@ -44,13 +45,14 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
     final static String TAG = "AllReportActivity";
     ReportListAdapter adapter;
     RecyclerView recyclerView;
-    ArrayList<Report> allReport = new ArrayList<Report>();
+    final ArrayList<Report> allReport = new ArrayList<Report>();
     private GoogleMap mMap;
     /**Keeps track of the selected marker.**/
     private Marker mSelectedMarker;
     private boolean mPermissionDenied = false;
     private LocationListener locationListener;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private HashMap<Marker , Report > mReportMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +94,12 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
     }
 
     private void addMarkersToMap(LatLng Locations ,Report i) {
-                mMap.addMarker(new MarkerOptions()
+                Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(Locations)
                         .title(i.getTitle())
                         .snippet(i.getDescription()));
+                mReportMap.put(marker, i);
+//                mMap.setInfoWindowAdapter(new ReportMapInfoAdapter(this.getApplicationContext()));
     }
 
     @Override
