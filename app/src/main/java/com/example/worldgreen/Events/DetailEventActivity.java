@@ -10,8 +10,11 @@ import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
 
+import com.example.worldgreen.FirebaseManager.FirebaseManager;
+import com.example.worldgreen.FirebaseManager.FirebaseManagerCompleteMessage;
 import com.example.worldgreen.R;
 import com.example.worldgreen.Reports.DetailReportActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -27,6 +30,7 @@ public class DetailEventActivity extends AppCompatActivity {
 
         event = (Event) getIntent().getSerializableExtra("event");
         setupShowReportButton();
+        setupGoingButton();
         updateUI();
     }
 
@@ -49,6 +53,38 @@ public class DetailEventActivity extends AppCompatActivity {
         });
     }
 
+    private void setupGoingButton() {
+        Button goingButton = findViewById(R.id.going_button);
+
+
+
+        goingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseManager firebaseManager = new FirebaseManager();
+
+                if (event.amIParticipating()) {
+                    firebaseManager.removeFromGoing(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
+                        @Override
+                        public void onCallback(String completeMessage) {
+                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+
+                    firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
+                        @Override
+                        public void onCallback(String completeMessage) {
+                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     //endregion
 
 
@@ -60,9 +96,11 @@ public class DetailEventActivity extends AppCompatActivity {
             TextView titleTextView = findViewById(R.id.event_title);
             TextView descriptionTextView = findViewById(R.id.event_description);
             TextView dateTextView = findViewById(R.id.event_date);
+            TextView participatingTextView = findViewById(R.id.people_going);
 
-            titleTextView.setText(event.getTitle());
+            titleTextView.setText(event.getTitle() + " " + event.amIParticipating());
             descriptionTextView.setText(event.getDescription());
+            participatingTextView.setText("People going: " + event.getParticipantsNumber());
 
             Date date = new Date(event.getTimestamp().getTime());
             String formattedDate = SimpleDateFormat.getDateTimeInstance().format(date);

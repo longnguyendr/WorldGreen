@@ -5,10 +5,25 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Event implements Serializable {
-    String description;
-    String title;
-    Timestamp timestamp;
-    Report report;
+    private String description;
+    private String creatorId;
+    private String id;
+    private String title;
+    private Timestamp timestamp;
+    private Report report;
+    private int participantsNumber;
+    private boolean amIParticipating;
+
+    public Event(String description, String creatorId, String id, boolean amIParticipating, int participantsNumber, String title, Timestamp timestamp, Report report) {
+        this.description = description;
+        this.creatorId = creatorId;
+        this.id = id;
+        this.amIParticipating = amIParticipating;
+        this.participantsNumber = participantsNumber;
+        this.title = title;
+        this.timestamp = timestamp;
+        this.report = report;
+    }
 
     public Event(String description, String title, Timestamp timestamp, Report report) {
         this.description = description;
@@ -21,24 +36,12 @@ public class Event implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public Timestamp getTimestamp() {
         return timestamp;
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
     }
 
     public Report getReport() {
@@ -48,4 +51,21 @@ public class Event implements Serializable {
     public void setReport(Report report) {
         this.report = report;
     }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public int getParticipantsNumber() {
+        return participantsNumber;
+    }
+
+    public boolean amIParticipating() {
+        return amIParticipating;
+    }
+
 }
