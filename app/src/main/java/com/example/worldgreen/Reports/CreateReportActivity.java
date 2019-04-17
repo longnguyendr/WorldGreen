@@ -163,9 +163,8 @@ public class CreateReportActivity extends AppCompatActivity {
     //region UI methods
     //----------------------------------------------------------------------------------------------
 
-    private void resetUI() {
-        EditText description = findViewById(R.id.report_description);
-        description.setText(null);
+    public void resetUI() {
+        this.finish();
     }
 
     private void updateLocationTextView(Location location) {
@@ -287,14 +286,8 @@ public class CreateReportActivity extends AppCompatActivity {
 
         FirebaseManager manager = new FirebaseManager();
 
-        try {
-            manager.saveReport(report);
-            Toast.makeText(getApplicationContext(), "Report saved!", Toast.LENGTH_SHORT).show();
-            resetUI();
-        } catch (Exception e) {
-            Log.d(TAG, "createReport: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        manager.saveReport(this, report);
+        
     }
 
     //endregion
