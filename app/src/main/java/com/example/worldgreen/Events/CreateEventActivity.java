@@ -86,6 +86,13 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
 
     //endregion
 
+    //region UI methods
+    //----------------------------------------------------------------------------------------------
+
+    public void resetUI() {
+        this.finish();
+    }
+
 
     //region date and time methods
     //----------------------------------------------------------------------------------------------
@@ -178,15 +185,7 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
 
         FirebaseManager manager = new FirebaseManager();
         Event e = new Event(inputDescription.getText().toString() ,inputTitle.getText().toString(), timestamp, report);
-
-        try {
-            manager.saveEvent(e);
-            Toast.makeText(CreateEventActivity.this, "create event successfully", Toast.LENGTH_SHORT).show();
-        } catch (Exception e1) {
-            Toast.makeText(CreateEventActivity.this, e1.getMessage(), Toast.LENGTH_SHORT).show();
-            e1.printStackTrace();
-        }
-
+        manager.saveEvent(e, this);
     }
 
     //endregion

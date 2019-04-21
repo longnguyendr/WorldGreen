@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.DataModel.Report;
+import com.example.worldgreen.Events.CreateEventActivity;
 import com.example.worldgreen.Reports.CreateReportActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -296,7 +297,7 @@ public class FirebaseManager {
     //region Event methods
     //----------------------------------------------------------------------------------------------
 
-    public void saveEvent(Event event) throws Exception {
+    public void saveEvent(Event event, final CreateEventActivity context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = database.getReference(user.getUid()).child("events").push();
@@ -312,13 +313,16 @@ public class FirebaseManager {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            try {
-                                throw task.getException();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context.getApplicationContext(), "Event successfuly saved.", Toast.LENGTH_SHORT).show();
+                            context.resetUI();
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
