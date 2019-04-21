@@ -12,6 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:hint="Title"
         />
+
     <EditText
         android:id="@+id/create_event_description"
         android:layout_width="match_parent"
@@ -74,5 +75,14 @@
         app:layout_constraintTop_toBottomOf="@id/setDate_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBar_event"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintTop_toBottomOf="@id/create_event_button"
         />
 </android.support.constraint.ConstraintLayout>

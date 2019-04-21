@@ -63,6 +63,7 @@ public class FirebaseManager {
                         if (task.isSuccessful()) {
                             Toast.makeText(context, "Report successfully saved", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "resetUI: RESET UI CALLED from firebase manager");
+                            context.resetButton();
                             context.resetUI();
                         }
                     }
@@ -70,6 +71,7 @@ public class FirebaseManager {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        context.resetButton();
                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -315,6 +317,7 @@ public class FirebaseManager {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(context.getApplicationContext(), "Event successfuly saved.", Toast.LENGTH_SHORT).show();
+                            context.resetCreateButton();
                             context.resetUI();
                         }
                     }
@@ -322,6 +325,7 @@ public class FirebaseManager {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        context.resetCreateButton();
                         Toast.makeText(context.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
