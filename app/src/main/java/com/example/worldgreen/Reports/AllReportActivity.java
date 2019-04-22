@@ -74,6 +74,7 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         enableMyLocation();
 
     }
@@ -99,6 +100,7 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
                         .title(i.getTitle())
                         .snippet(i.getDescription()));
                 mReportMap.put(marker, i);
+//                Log.d(TAG,"----add marker mReportMap: " + mReportMap.get(marker).getDescription());
 //                mMap.setInfoWindowAdapter(new ReportMapInfoAdapter(this.getApplicationContext()));
     }
 
@@ -218,8 +220,9 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
     @Override
     public void onInfoWindowClick(Marker marker) {
         mSelectedMarker = marker;
+        Log.d(TAG,"----infowindow mReportMap: " + mReportMap.get(marker).getTitle());
         Toast.makeText(AllReportActivity.this, "on inforWindow Click", Toast.LENGTH_SHORT).show();
-//        Log.d(TAG, "marker position" + marker.getPosition());
-//        startActivity(new Intent(this, DetailReportActivity.class));
+        Log.d(TAG, "marker position" + marker.getPosition());
+        startActivity(new Intent(this, DetailReportActivity.class).putExtra("report", mReportMap.get(marker)));
     }
 }
