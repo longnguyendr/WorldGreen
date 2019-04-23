@@ -98,7 +98,7 @@ public class FirebaseManager {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT);
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onFailure: FAILED UPLOAD PHOTO");
                         }
                     });
@@ -533,80 +533,58 @@ public class FirebaseManager {
         ref.addValueEventListener(eventListener);
     }
 
-    public void goingToEvent(FirebaseUser user, Event event, final FirebaseManagerCompleteMessage message){
+    public void goingToEvent(FirebaseUser user, Event event, Context context){
 
-        addUserToEvent(user, event, new FirebaseManagerCompleteMessage() {
-            @Override
-            public void onCallback(String completeMessage) {
-                message.onCallback(completeMessage);
-            }
-        });
-
-        addEventToUser(user.getUid(), event, new FirebaseManagerCompleteMessage() {
-            @Override
-            public void onCallback(String completeMessage) {
-                message.onCallback(completeMessage);
-            }
-        });
+        addUserToEvent(user, event, context);
+        addEventToUser(user.getUid(), event, context);
 
     }
 
-    public void removeFromGoing(FirebaseUser user, Event event, final FirebaseManagerCompleteMessage message) {
+    public void removeFromGoing(FirebaseUser user, Event event, final Context context) {
 
-        removeUserFromEvent(user, event, new FirebaseManagerCompleteMessage() {
-            @Override
-            public void onCallback(String completeMessage) {
-                message.onCallback(completeMessage);
-            }
-        });
-
-        removeEventFromUser(user.getUid(), event, new FirebaseManagerCompleteMessage() {
-            @Override
-            public void onCallback(String completeMessage) {
-                message.onCallback(completeMessage);
-            }
-        });
+        removeUserFromEvent(user.getUid(),event,context);
+        removeEventFromUser(user.getUid(), event, context);
 
     }
 
-    private void removeUserFromEvent(FirebaseUser user, Event event, final FirebaseManagerCompleteMessage completeMessage) {
+    private void removeUserFromEvent(String userId, Event event, final Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(user.getUid());
+        DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(userId);
 
         ref.removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        completeMessage.onCallback("Success remove user from event");
+                        Toast.makeText(context, "Success remove user from event", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        completeMessage.onCallback(e.getMessage());
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    private void removeEventFromUser(String userId, Event event, final FirebaseManagerCompleteMessage completeMessage) {
+    private void removeEventFromUser(String userId, Event event, final Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(userId).child("participating").child(event.getId());
         ref.removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        completeMessage.onCallback("Success remove event from user");
+                        Toast.makeText(context, "Success remove event from user", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        completeMessage.onCallback(e.getMessage());
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    private void addEventToUser(String userId, Event event, final FirebaseManagerCompleteMessage completeMessage){
+    private void addEventToUser(String userId, Event event, final Context context){
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(userId).child("participating").child(event.getId());
@@ -617,19 +595,19 @@ public class FirebaseManager {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        completeMessage.onCallback("Success");
+                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        completeMessage.onCallback(e.getMessage());
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
     }
 
-    private void addUserToEvent(FirebaseUser user, final Event event, final FirebaseManagerCompleteMessage completeMessage){
+    private void addUserToEvent(FirebaseUser user, final Event event, final Context context){
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(event.getCreatorId()).child("events").child(event.getId()).child("participants").child(user.getUid());
@@ -641,13 +619,13 @@ public class FirebaseManager {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        completeMessage.onCallback("Success");
+                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        completeMessage.onCallback(e.getMessage());
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

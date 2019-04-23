@@ -94,7 +94,11 @@ public class MyEventActivity extends AppCompatActivity {
         manager.getEventsIamParticipating(mAuth.getCurrentUser(), new EventCallback() {
             @Override
             public void onCallback(Event event) {
-                myEvent.add(event);
+                if (eventExists(event)) {
+                    replaceEvent(event);
+                } else {
+                    myEvent.add(event);
+                }
                 adapter.notifyDataSetChanged();
             }
         });

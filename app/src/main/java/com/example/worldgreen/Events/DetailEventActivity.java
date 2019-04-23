@@ -65,21 +65,9 @@ public class DetailEventActivity extends AppCompatActivity {
                 FirebaseManager firebaseManager = new FirebaseManager();
 
                 if (event.amIParticipating()) {
-                    firebaseManager.removeFromGoing(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
-                        @Override
-                        public void onCallback(String completeMessage) {
-                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    firebaseManager.removeFromGoing(FirebaseAuth.getInstance().getCurrentUser(), event, getApplicationContext());
                 } else {
-
-                    firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
-                        @Override
-                        public void onCallback(String completeMessage) {
-                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
+                    firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event, getApplicationContext());
                 }
             }
         });
