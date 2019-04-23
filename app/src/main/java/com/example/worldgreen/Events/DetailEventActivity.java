@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.example.worldgreen.DataModel.Event;
 
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
-import com.example.worldgreen.FirebaseManager.FirebaseManagerCompleteMessage;
 import com.example.worldgreen.R;
 import com.example.worldgreen.Reports.DetailReportActivity;
 import com.google.firebase.auth.FirebaseAuth;
