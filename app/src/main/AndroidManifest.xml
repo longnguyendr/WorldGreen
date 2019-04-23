@@ -41,15 +41,24 @@
             android:name=".Maps.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
         <activity android:name=".Events.CreateEventActivity" />
-        <activity android:name=".Events.MyEventActivity" />
-        <activity android:name=".Reports.MyReportActivity" />
-        <activity android:name=".Donate.DonateActivity" />
-        <activity android:name=".Events.AllEventActivity" />
+        <activity android:name=".Events.MyEventActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Reports.MyReportActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Donate.DonateActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".Events.AllEventActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".Users.ProfileActivity" />
-        <activity android:name=".Reports.AllReportActivity" />
-        <activity android:name=".Reports.DetailReportActivity" />
-        <activity android:name=".Events.DetailEventActivity" />
-        <activity android:name=".Reports.CreateReportActivity" />
+        <activity android:name=".Reports.AllReportActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Reports.DetailReportActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Events.DetailEventActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Reports.CreateReportActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".Users.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +67,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Users.RegisterActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
