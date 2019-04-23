@@ -19,10 +19,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Events.CreateEventActivity"></activity>
+        <activity android:name=".Donate.Config.PaymentDetails"></activity>
+        <activity android:name=".Events.CreateEventActivity" />
         <activity android:name=".Events.MyEventActivity" />
         <activity android:name=".Reports.MyReportActivity" />
-        <activity android:name=".Donate.DonateActivity" />
+        <activity android:name=".Donate.Config.DonateActivity" />
         <activity android:name=".Events.AllEventActivity" />
         <activity android:name=".Users.ProfileActivity" />
         <activity android:name=".Reports.AllReportActivity" />

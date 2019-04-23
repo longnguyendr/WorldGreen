@@ -8,11 +8,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.view.Menu;
 
-import com.example.worldgreen.Donate.DonateActivity;
+import com.example.worldgreen.Donate.Config.DonateActivity;
 import com.example.worldgreen.Events.AllEventActivity;
-import com.example.worldgreen.Events.CreateEventActivity;
 import com.example.worldgreen.Reports.AllReportActivity;
 import com.example.worldgreen.Users.LoginActivity;
 import com.example.worldgreen.Reports.CreateReportActivity;
