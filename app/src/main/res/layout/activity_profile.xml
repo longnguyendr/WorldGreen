@@ -51,4 +51,14 @@
         android:text="@string/btn_view_my_event"
         app:layout_constraintTop_toBottomOf="@+id/view_my_report_button" />
 
+    <Button
+        android:id="@+id/view_events_i_am_participating_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/btn_view_participating_event"
+        app:layout_constraintTop_toBottomOf="@+id/view_my_event_button" />
+
 </android.support.constraint.ConstraintLayout>

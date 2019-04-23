@@ -22,15 +22,20 @@ public class MyEventActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     final ArrayList<Event> myEvent = new ArrayList<Event>();
     FirebaseAuth mAuth;
-
+    boolean participating = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_event);
-
+        participating = getIntent().getBooleanExtra("participating", false);
         prepareView();
-        getUsersEvent();
+
+        if (participating) {
+            getParticipatingEvent();
+        } else {
+            getUsersEvent();
+        }
     }
     protected void prepareView () {
         recyclerView = (RecyclerView) findViewById(R.id.events_list_recycleView);
@@ -67,6 +72,29 @@ public class MyEventActivity extends AppCompatActivity {
                 } else {
                     myEvent.add(event);
                 }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void getParticipatingEvent() {
+        adapter = new EventListAdapter(getApplicationContext(), myEvent);
+        adapter.setItemClickListener(new EventListAdapter.itemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent i = new Intent(MyEventActivity.this, DetailEventActivity.class);
+                i.putExtra("event", myEvent.get(position));
+                startActivity(i);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+
+        FirebaseManager manager = new FirebaseManager();
+        mAuth = FirebaseAuth.getInstance();
+        manager.getEventsIamParticipating(mAuth.getCurrentUser(), new EventCallback() {
+            @Override
+            public void onCallback(Event event) {
+                myEvent.add(event);
                 adapter.notifyDataSetChanged();
             }
         });
