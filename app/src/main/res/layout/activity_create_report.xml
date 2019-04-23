@@ -64,6 +64,14 @@
             android:layout_marginRight="40dp"
             />
 
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            />
+
         <LinearLayout
             android:id="@+id/size_layout"
             android:layout_width="match_parent"

@@ -1,10 +1,14 @@
 package com.example.worldgreen.FirebaseManager;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.DataModel.Report;
+import com.example.worldgreen.Events.CreateEventActivity;
+import com.example.worldgreen.Reports.CreateReportActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,7 +42,7 @@ public class FirebaseManager {
      * @throws Exception
      *
      */
-    public void saveReport(Report report) throws Exception {
+    public void saveReport(final CreateReportActivity context, Report report) {
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -56,21 +60,27 @@ public class FirebaseManager {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            try {
-                                throw task.getException();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context, "Report successfully saved", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "resetUI: RESET UI CALLED from firebase manager");
+                            context.resetButton();
+                            context.resetUI();
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        context.resetButton();
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
 
-        savePhotos(ref.getKey(), report.getPhotos());
+        savePhotos(context, ref.getKey(), report.getPhotos());
     }
 
-    private void savePhotos(String reportKey, ArrayList<byte[]> photos) {
+    private void savePhotos(final Context context, String reportKey, ArrayList<byte[]> photos) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -87,6 +97,7 @@ public class FirebaseManager {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT);
                             Log.d(TAG, "onFailure: FAILED UPLOAD PHOTO");
                         }
                     });
@@ -288,7 +299,7 @@ public class FirebaseManager {
     //region Event methods
     //----------------------------------------------------------------------------------------------
 
-    public void saveEvent(Event event) throws Exception {
+    public void saveEvent(Event event, final CreateEventActivity context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = database.getReference(user.getUid()).child("events").push();
@@ -304,13 +315,18 @@ public class FirebaseManager {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            try {
-                                throw task.getException();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context.getApplicationContext(), "Event successfuly saved.", Toast.LENGTH_SHORT).show();
+                            context.resetCreateButton();
+                            context.resetUI();
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        context.resetCreateButton();
+                        Toast.makeText(context.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

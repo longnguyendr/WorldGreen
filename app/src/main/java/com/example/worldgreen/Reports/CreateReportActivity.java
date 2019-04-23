@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,19 +64,21 @@ public class CreateReportActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private Location mLocation;
 
+    private ProgressBar progressBar;
+    private Button createButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_report);
 
+        progressBar = findViewById(R.id.progressBar1);
+        createButton = findViewById(R.id.save_report_button);
         size = getResources().getStringArray(R.array.report_size)[0];
         gallery = findViewById(R.id.photo_gallery);
         layoutInflater = LayoutInflater.from(this);
 
-        setupCreateButton();
-        setupUpdateLocationButton();
-        setupCameraButton();
-        setupSpinner();
+        setupUI();
         getLocation();
     }
 
@@ -163,9 +166,13 @@ public class CreateReportActivity extends AppCompatActivity {
     //region UI methods
     //----------------------------------------------------------------------------------------------
 
-    private void resetUI() {
-        EditText description = findViewById(R.id.report_description);
-        description.setText(null);
+    public void resetUI() {
+        this.finish();
+    }
+
+    public void resetButton() {
+        createButton.setClickable(true);
+        setProgressBar(false);
     }
 
     private void updateLocationTextView(Location location) {
@@ -182,17 +189,20 @@ public class CreateReportActivity extends AppCompatActivity {
     //region Setup methods
     //----------------------------------------------------------------------------------------------
 
+    private void setupUI() {
+        setupCreateButton();
+        setupUpdateLocationButton();
+        setupCameraButton();
+        setupSpinner();
+        setProgressBar(false);
+    }
+
     void setupCreateButton() {
-        Button createButton = findViewById(R.id.save_report_button);
+
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    createReport();
-                } catch (CreateReportException e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
+                createButtonPressed();
             }
         });
     }
@@ -237,6 +247,14 @@ public class CreateReportActivity extends AppCompatActivity {
 
     }
 
+    public void setProgressBar(boolean show) {
+        if (show) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     public void onAccessibilityRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
@@ -257,6 +275,18 @@ public class CreateReportActivity extends AppCompatActivity {
 
     //region Create report methods
     //----------------------------------------------------------------------------------------------
+
+    private void createButtonPressed() {
+        createButton.setClickable(false);
+        setProgressBar(true);
+        try {
+            createReport();
+        } catch (CreateReportException e) {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
 
     void createReport() throws CreateReportException {
 
@@ -287,14 +317,8 @@ public class CreateReportActivity extends AppCompatActivity {
 
         FirebaseManager manager = new FirebaseManager();
 
-        try {
-            manager.saveReport(report);
-            Toast.makeText(getApplicationContext(), "Report saved!", Toast.LENGTH_SHORT).show();
-            resetUI();
-        } catch (Exception e) {
-            Log.d(TAG, "createReport: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        manager.saveReport(this, report);
+        
     }
 
     //endregion

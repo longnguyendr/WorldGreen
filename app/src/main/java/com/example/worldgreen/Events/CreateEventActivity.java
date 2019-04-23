@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -31,22 +32,54 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
     Report report ;
     Timestamp timestamp;
     Calendar c = Calendar.getInstance();
+    Button createButton;
+    Button chooseTimeButton;
+    Button chooseDateButton;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+        createButton = findViewById(R.id.create_event_button);
+        progressBar = findViewById(R.id.progressBar_event);
+        chooseDateButton = findViewById(R.id.choose_date_button);
+        chooseTimeButton = findViewById(R.id.choose_time_button);
+        setupUI();
+    }
 
+    //region UI & UX methods
+    //----------------------------------------------------------------------------------------------
+
+    private void setupUI() {
+        setProgressBar(false);
         setupCreateEventButton();
         setupChooseDateButton();
         setupChooseTimeButton();
     }
 
+    private void setProgressBar(boolean show) {
+        if (show) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    public void resetCreateButton() {
+        setProgressBar(false);
+        createButton.setClickable(true);
+        chooseDateButton.setClickable(true);
+        chooseTimeButton.setClickable(true);
+    }
+
+    //endregion
+
     //region setup methods
     //----------------------------------------------------------------------------------------------
 
     private void setupChooseDateButton() {
-        Button chooseDateButton = findViewById(R.id.choose_date_button);
+
         chooseDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +89,6 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
     }
 
     private void setupChooseTimeButton() {
-        Button chooseTimeButton = findViewById(R.id.choose_time_button);
         chooseTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,25 +98,37 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
     }
 
     private void setupCreateEventButton() {
-        Button btnCreateEvent;
-        btnCreateEvent = findViewById(R.id.create_event_button);
 
-
-        btnCreateEvent.setOnClickListener(new View.OnClickListener() {
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    createEvent();
-                } catch (CreateEventException e) {
-                    Toast.makeText(CreateEventActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-
-                }
+                createButtonPressed();
             }
         });
     }
 
+    private void createButtonPressed() {
+        setProgressBar(true);
+        createButton.setClickable(false);
+        chooseDateButton.setClickable(false);
+        chooseTimeButton.setClickable(false);
+        try {
+            createEvent();
+        } catch (CreateEventException e) {
+            Toast.makeText(CreateEventActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+
+        }
+    }
+
     //endregion
+
+    //region UI methods
+    //----------------------------------------------------------------------------------------------
+
+    public void resetUI() {
+        this.finish();
+    }
 
 
     //region date and time methods
@@ -178,15 +222,7 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
 
         FirebaseManager manager = new FirebaseManager();
         Event e = new Event(inputDescription.getText().toString() ,inputTitle.getText().toString(), timestamp, report);
-
-        try {
-            manager.saveEvent(e);
-            Toast.makeText(CreateEventActivity.this, "create event successfully", Toast.LENGTH_SHORT).show();
-        } catch (Exception e1) {
-            Toast.makeText(CreateEventActivity.this, e1.getMessage(), Toast.LENGTH_SHORT).show();
-            e1.printStackTrace();
-        }
-
+        manager.saveEvent(e, this);
     }
 
     //endregion
