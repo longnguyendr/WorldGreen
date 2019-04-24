@@ -8,23 +8,34 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Report;
+import com.example.worldgreen.Donate.DonateActivity;
+import com.example.worldgreen.Events.AllEventActivity;
+import com.example.worldgreen.Events.MyEventActivity;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
 import com.example.worldgreen.FirebaseManager.ReportCallback;
+import com.example.worldgreen.MainActivity;
 import com.example.worldgreen.MapManager.PermissionUtils;
 import com.example.worldgreen.Maps.OnMapAndViewReadyListener;
 import com.example.worldgreen.R;
+import com.example.worldgreen.Users.LoginActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -32,6 +43,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.worldgreen.MapManager.MapManager;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.LogManager;
@@ -41,10 +54,10 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
         GoogleMap.OnInfoWindowClickListener,
         OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener,
         GoogleMap.OnMyLocationButtonClickListener,
+        NavigationView.OnNavigationItemSelectedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
+
     final static String TAG = "AllReportActivity";
-    ReportListAdapter adapter;
-    RecyclerView recyclerView;
     final ArrayList<Report> allReport = new ArrayList<Report>();
     private GoogleMap mMap;
     /**Keeps track of the selected marker.**/
@@ -64,6 +77,17 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
                 .findFragmentById(R.id.map);
         new OnMapAndViewReadyListener(mapFragment, this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
     @Override
     public void onMapReady(GoogleMap map) {
@@ -143,7 +167,7 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
-            MapManager mManager = new MapManager();
+//            MapManager mManager = new MapManager();
 //            mManager.checkLocationListener();
             checkLocationListener();
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -224,5 +248,47 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
         Toast.makeText(AllReportActivity.this, "on inforWindow Click", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "marker position" + marker.getPosition());
         startActivity(new Intent(this, DetailReportActivity.class).putExtra("report", mReportMap.get(marker)));
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_create_report) {
+            startActivity(new Intent(this,CreateReportActivity.class));
+        } else if (id == R.id.nav_view_all_report) {
+            startActivity(new Intent(this, AllReportActivity.class));
+        } else if (id == R.id.nav_view_all_event) {
+            startActivity(new Intent(this, AllEventActivity.class));
+        } else if (id == R.id.nav_donate) {
+            startActivity(new Intent(this, DonateActivity.class));
+        } else if (id == R.id.nav_my_event) {
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", false));
+        } else if (id == R.id.nav_participate_event) {
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", true));
+        } else if (id == R.id.nav_my_report) {
+            startActivity(new Intent(this, MyReportActivity.class));
+        } else if (id == R.id.nav_sign_out) {
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(this, "Sign out Successful", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        } else if (id == R.id.nav_home) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

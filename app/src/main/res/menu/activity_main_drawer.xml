@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/main_activity" />
+        <item
+            android:id="@+id/nav_create_report"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/btn_create_report" />
+        <item
+            android:id="@+id/nav_view_all_event"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/view_all_event_button" />
+        <item
+            android:id="@+id/nav_view_all_report"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/view_all_report_button" />
+        <item
+            android:id="@+id/nav_donate"
+            android:icon="@drawable/ic_menu_share"
+            android:title="@string/donate_button" />
+    </group>
+
+    <item android:title="My Activity">
+        <menu>
+            <item
+                android:id="@+id/nav_my_report"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/btn_view_my_report" />
+            <item
+                android:id="@+id/nav_my_event"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/btn_view_my_event" />
+            <item
+                android:id="@+id/nav_participate_event"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_participate_event" />
+            <item
+                android:id="@+id/nav_sign_out"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/btn_sign_out" />
+        </menu>
+    </item>
+
+</menu>

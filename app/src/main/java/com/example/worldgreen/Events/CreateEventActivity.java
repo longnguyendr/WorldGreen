@@ -2,9 +2,14 @@ package com.example.worldgreen.Events;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -16,15 +21,22 @@ import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
 import com.example.worldgreen.DataModel.Report;
+import com.example.worldgreen.Donate.DonateActivity;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
+import com.example.worldgreen.MainActivity;
 import com.example.worldgreen.R;
+import com.example.worldgreen.Reports.AllReportActivity;
+import com.example.worldgreen.Reports.CreateReportActivity;
+import com.example.worldgreen.Reports.MyReportActivity;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class CreateEventActivity extends FragmentActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CreateEventActivity extends FragmentActivity implements
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener{
 
     private static final String TAG = "CreateEventActivity";
 
@@ -45,6 +57,7 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
         progressBar = findViewById(R.id.progressBar_event);
         chooseDateButton = findViewById(R.id.choose_date_button);
         chooseTimeButton = findViewById(R.id.choose_time_button);
+
         setupUI();
     }
 
@@ -226,4 +239,5 @@ public class CreateEventActivity extends FragmentActivity implements DatePickerD
     }
 
     //endregion
+
 }

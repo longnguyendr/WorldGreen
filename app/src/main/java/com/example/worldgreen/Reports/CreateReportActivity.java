@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,8 +38,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
+import com.example.worldgreen.MapManager.MapManager;
+import com.example.worldgreen.MapManager.PermissionUtils;
 import com.example.worldgreen.R;
 import com.example.worldgreen.DataModel.Report;
+import com.google.android.gms.maps.GoogleMap;
 
 
 import java.io.ByteArrayOutputStream;
@@ -55,15 +59,17 @@ public class CreateReportActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
     private static final int LOCATION_REQUEST = 2;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private ArrayList<byte[]> photos = new ArrayList<>();
     private Boolean isAccessibleByCar = null;
+    private boolean mPermissionDenied = false;
     private String size;
     private LinearLayout gallery;
     private LayoutInflater layoutInflater;
     private LocationListener locationListener;
     private Location mLocation;
-
+    private GoogleMap mMap;
     private ProgressBar progressBar;
     private Button createButton;
 
@@ -87,18 +93,20 @@ public class CreateReportActivity extends AppCompatActivity {
     //----------------------------------------------------------------------------------------------
 
     void getLocation() {
-        setupLocationListener();
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Log.d(TAG, "getLocation: showing fine access reason");
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST);
-            }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
+            setupLocationListener();
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,20, locationListener, null);
         }
-        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
     }
 
     private void setupLocationListener() {
@@ -128,16 +136,38 @@ public class CreateReportActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case LOCATION_REQUEST:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLocation();
-                } else {
-                    Toast.makeText(CreateReportActivity.this,"No permission to get location!", Toast.LENGTH_LONG).show();
-                }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
         }
+
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Enable the my location layer if the permission has been granted.
+            getLocation();
+        } else {
+            // Display the missing permission error dialog when the fragments resume.
+            mPermissionDenied = true;
+        }
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mPermissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            mPermissionDenied = false;
+        }
+    }
+
+    /**
+     * Displays a dialog with error message explaining that the location permission is missing.
+     */
+    private void showMissingPermissionError() {
+        PermissionUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
     private String getAddress(double lat, double lon) {
