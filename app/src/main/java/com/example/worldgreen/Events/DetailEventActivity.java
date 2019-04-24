@@ -18,7 +18,6 @@ import com.example.worldgreen.DataModel.Event;
 
 import com.example.worldgreen.Donate.DonateActivity;
 import com.example.worldgreen.FirebaseManager.FirebaseManager;
-import com.example.worldgreen.FirebaseManager.FirebaseManagerCompleteMessage;
 import com.example.worldgreen.MainActivity;
 import com.example.worldgreen.R;
 import com.example.worldgreen.Reports.AllReportActivity;
@@ -89,21 +88,9 @@ public class DetailEventActivity extends AppCompatActivity implements Navigation
                 FirebaseManager firebaseManager = new FirebaseManager();
 
                 if (event.amIParticipating()) {
-                    firebaseManager.removeFromGoing(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
-                        @Override
-                        public void onCallback(String completeMessage) {
-                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    firebaseManager.removeFromGoing(FirebaseAuth.getInstance().getCurrentUser(), event, getApplicationContext());
                 } else {
-
-                    firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event, new FirebaseManagerCompleteMessage() {
-                        @Override
-                        public void onCallback(String completeMessage) {
-                            Toast.makeText(getApplicationContext(), completeMessage, Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
+                    firebaseManager.goingToEvent(FirebaseAuth.getInstance().getCurrentUser(), event, getApplicationContext());
                 }
             }
         });
@@ -159,7 +146,9 @@ public class DetailEventActivity extends AppCompatActivity implements Navigation
         } else if (id == R.id.nav_donate) {
             startActivity(new Intent(this, DonateActivity.class));
         } else if (id == R.id.nav_my_event) {
-            startActivity(new Intent(this, MyEventActivity.class));
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", false));
+        } else if (id == R.id.nav_participate_event) {
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", true));
         } else if (id == R.id.nav_my_report) {
             startActivity(new Intent(this, MyReportActivity.class));
         } else if (id == R.id.nav_sign_out) {

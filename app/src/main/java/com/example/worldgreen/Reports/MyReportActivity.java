@@ -113,7 +113,9 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
         } else if (id == R.id.nav_donate) {
             startActivity(new Intent(this, DonateActivity.class));
         } else if (id == R.id.nav_my_event) {
-            startActivity(new Intent(this, MyEventActivity.class));
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", false));
+        } else if (id == R.id.nav_participate_event) {
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", true));
         } else if (id == R.id.nav_my_report) {
             startActivity(new Intent(this, MyReportActivity.class));
         } else if (id == R.id.nav_sign_out) {

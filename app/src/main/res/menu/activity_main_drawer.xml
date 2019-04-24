@@ -37,6 +37,10 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="@string/btn_view_my_event" />
             <item
+                android:id="@+id/nav_participate_event"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_participate_event" />
+            <item
                 android:id="@+id/nav_sign_out"
                 android:icon="@drawable/ic_menu_send"
                 android:title="@string/btn_sign_out" />

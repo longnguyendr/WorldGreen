@@ -50,6 +50,7 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="btn_view_my_report">My report</string>
     <string name="btn_view_my_event">My Event</string>
+    <string name="btn_view_participating_event">I am participating</string>
     <string name="title_activity_maps">Map</string>
     <string name="btn_maps">Maps</string>
     <!--    Permissions    -->
@@ -60,4 +61,5 @@
     <string name="report_title">Enter title</string>
     <string name="report_description">Enter description</string>
     <string name="Dashboard">Intructions</string>
+    <string name="nav_participate_event">Participate Event</string>
 </resources>

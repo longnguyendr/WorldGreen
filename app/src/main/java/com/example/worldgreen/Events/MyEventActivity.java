@@ -35,7 +35,7 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
     RecyclerView recyclerView;
     final ArrayList<Event> myEvent = new ArrayList<Event>();
     FirebaseAuth mAuth;
-
+    boolean participating = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +53,14 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        participating = getIntent().getBooleanExtra("participating", false);
         prepareView();
-        getUsersEvent();
+
+        if (participating) {
+            getParticipatingEvent();
+        } else {
+            getUsersEvent();
+        }
     }
     protected void prepareView () {
         recyclerView = (RecyclerView) findViewById(R.id.events_list_recycleView);
@@ -84,6 +90,33 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
         FirebaseManager manager = new FirebaseManager();
         mAuth = FirebaseAuth.getInstance();
         manager.getUsersEvents(mAuth.getCurrentUser().getUid(), new EventCallback() {
+            @Override
+            public void onCallback(Event event) {
+                if (eventExists(event)) {
+                    replaceEvent(event);
+                } else {
+                    myEvent.add(event);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void getParticipatingEvent() {
+        adapter = new EventListAdapter(getApplicationContext(), myEvent);
+        adapter.setItemClickListener(new EventListAdapter.itemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent i = new Intent(MyEventActivity.this, DetailEventActivity.class);
+                i.putExtra("event", myEvent.get(position));
+                startActivity(i);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+
+        FirebaseManager manager = new FirebaseManager();
+        mAuth = FirebaseAuth.getInstance();
+        manager.getEventsIamParticipating(mAuth.getCurrentUser(), new EventCallback() {
             @Override
             public void onCallback(Event event) {
                 if (eventExists(event)) {
@@ -143,7 +176,9 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
         } else if (id == R.id.nav_donate) {
             startActivity(new Intent(this, DonateActivity.class));
         } else if (id == R.id.nav_my_event) {
-            startActivity(new Intent(this, MyEventActivity.class));
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", false));
+        } else if (id == R.id.nav_participate_event) {
+            startActivity(new Intent(this, MyEventActivity.class).putExtra("participating", true));
         } else if (id == R.id.nav_my_report) {
             startActivity(new Intent(this, MyReportActivity.class));
         } else if (id == R.id.nav_sign_out) {
