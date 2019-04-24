@@ -69,7 +69,6 @@ public class CreateReportActivity extends AppCompatActivity {
     private LayoutInflater layoutInflater;
     private LocationListener locationListener;
     private Location mLocation;
-    private GoogleMap mMap;
     private ProgressBar progressBar;
     private Button createButton;
 
@@ -94,15 +93,14 @@ public class CreateReportActivity extends AppCompatActivity {
 
     void getLocation() {
 
-
+        Log.d(TAG, "getLocation: called");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mMap != null) {
-            // Access to the location has been granted to the app.
-            mMap.setMyLocationEnabled(true);
+//            getLocation();
+        } else {
             setupLocationListener();
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,20, locationListener, null);
