@@ -142,6 +142,7 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
                 } else {
                     myEvent.add(event);
                 }
+                progressBar(false);
                 adapter.notifyDataSetChanged();
             }
         });
