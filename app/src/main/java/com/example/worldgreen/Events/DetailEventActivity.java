@@ -109,9 +109,9 @@ public class DetailEventActivity extends AppCompatActivity implements Navigation
             TextView dateTextView = findViewById(R.id.event_date);
             TextView participatingTextView = findViewById(R.id.people_going);
 
-            titleTextView.setText(event.getTitle() + " " + event.amIParticipating());
+            titleTextView.setText(event.getTitle());
             descriptionTextView.setText(event.getDescription());
-            participatingTextView.setText("People going: " + event.getParticipantsNumber());
+            participatingTextView.setText(event.getParticipantsNumber() + " people going");
 
             Date date = new Date(event.getTimestamp().getTime());
             String formattedDate = SimpleDateFormat.getDateTimeInstance().format(date);
