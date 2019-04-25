@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -46,8 +47,8 @@ public class CreateEventActivity extends AppCompatActivity implements
     Timestamp timestamp;
     Calendar c = Calendar.getInstance();
     Button createButton;
-    Button chooseTimeButton;
-    Button chooseDateButton;
+    ImageButton chooseTimeButton;
+    ImageButton chooseDateButton;
     ProgressBar progressBar;
 
     @Override

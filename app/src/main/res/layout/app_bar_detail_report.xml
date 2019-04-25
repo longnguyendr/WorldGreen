@@ -4,12 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Reports.DetailReportActivity">
+    tools:context=".Reports.DetailReportActivity"
+    android:background="@color/viewBackgroundColor"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
+
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,76 +27,174 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.AppBarLayout>
-        <HorizontalScrollView
-            android:id="@+id/photos_scroll_view"
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:scrollbars="none"
-            >
+
+            <HorizontalScrollView
+                android:id="@+id/photos_scroll_view"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:scrollbars="none"
+                android:background="@color/buttonColor"
+                >
+
+                <LinearLayout
+                    android:id="@+id/photo_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    />
+            </HorizontalScrollView>
 
             <LinearLayout
-                android:id="@+id/photo_gallery"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                />
-        </HorizontalScrollView>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:divider="@drawable/divider"
+                android:showDividers="middle"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal"
+                    >
+                    <TextView
+                        android:id="@+id/report_detail_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="40dp"
+                        android:textColor="@color/textColor"
+                        android:layout_gravity="center"
+                        android:text="Title"
+                        android:textAlignment="center"
+                        android:textSize="31dp"
+                        />
 
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="40dp"
+                        android:textColor="@color/textColor"
+                        android:layout_gravity="center"
+                        android:text="description"
+                        android:textAlignment="center"
+                        />
 
+                </LinearLayout>
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            />
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="fill"
+                    android:background="@color/editTextBackgroundColor"
+                    >
+                    <ImageView
+                        android:id="@+id/detail_access_img"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_acess_car"
+                        android:layout_margin="10dp"
+                        />
+                    <TextView
+                        android:id="@+id/accessibility"
+                        android:layout_width="wrap_content"
+                        android:maxWidth="80dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textColor"
+                        android:layout_gravity="center"
+                        android:text="accessible by car"
+                        />
+                    <ImageView
+                        android:id="@+id/detail_size_img"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/ic_size_wheelbarrow"
+                        android:scaleType="fitStart"
+                        android:layout_margin="10dp"
+                        />
+                    <TextView
+                        android:id="@+id/size"
+                        android:layout_width="wrap_content"
+                        android:maxWidth="80dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textColor"
+                        android:layout_gravity="center"
+                        android:text="Bag should be enough"
+                        android:layout_marginRight="10dp"
+                        />
 
-        <TextView
-            android:id="@+id/address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            />
+                </LinearLayout>
 
-        <TextView
-            android:id="@+id/gps-coordinates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            />
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="fill"
+                    android:paddingLeft="10dp"
+                    >
 
-        <TextView
-            android:id="@+id/accessibility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="center_horizontal"
+                        >
 
-        <TextView
-            android:id="@+id/size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            />
+                        <TextView
+                            android:id="@+id/address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textColor"
+                            android:layout_gravity="left"
+                            android:text="Adress"
+                            />
 
+                        <TextView
+                            android:id="@+id/gps-coordinates"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textColor"
+                            android:layout_gravity="center"
+                            android:textAlignment="center"
+                            android:text="61.23132, 38.13213"
+                            />
 
-        <Button
-            android:id="@+id/test_create_event"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="create event"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            />
+                    </LinearLayout>
 
-    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/show_in_map"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_show_in_map"
+                        android:scaleType="fitEnd"
+                        android:background="@color/viewBackgroundColor"
+                        android:padding="10dp"
+                        android:tint="@color/textColor"
+                        />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/test_create_event"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="create event"
+                    android:layout_gravity="center"
+                    android:background="@color/buttonColor"
+                    android:textColor="@color/textColor"
+                    android:padding="10dp"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
 
 
 </android.support.design.widget.CoordinatorLayout>

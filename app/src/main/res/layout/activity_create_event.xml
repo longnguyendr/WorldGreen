@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Events.CreateEventActivity"
+    android:background="@color/viewBackgroundColor"
     >
 
     <FrameLayout
@@ -30,6 +31,10 @@
                 android:layout_marginRight="40dp"
                 android:layout_gravity="center"
                 android:hint="Title"
+                android:background="@color/editTextBackgroundColor"
+                android:padding="10dp"
+                android:textColor="@color/textColor"
+                android:textColorHint="@color/textHintColor"
                 />
 
             <EditText
@@ -40,6 +45,10 @@
                 android:layout_marginRight="40dp"
                 android:layout_gravity="center"
                 android:hint="Description"
+                android:background="@color/editTextBackgroundColor"
+                android:padding="10dp"
+                android:textColor="@color/textColor"
+                android:textColorHint="@color/textHintColor"
                 />
 
             <LinearLayout
@@ -55,6 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="@color/textColor"
                     />
 
             </LinearLayout>
@@ -67,18 +77,25 @@
                 android:orientation="horizontal"
                 >
 
-                <Button
+                <ImageButton
                     android:id="@+id/choose_date_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="choose date"
-                    />
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/viewBackgroundColor"
+                    android:textColor="@color/textColor"
+                    android:src="@drawable/ic_choose_date"
+                    android:scaleType="fitStart"
+                    android:layout_marginRight="10dp"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/choose_time_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="choose time"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/viewBackgroundColor"
+                    android:textColor="@color/textColor"
+                    android:src="@drawable/ic_choose_time"
+                    android:scaleType="fitStart"
+                    android:layout_marginLeft="10dp"
                     />
 
             </LinearLayout>
@@ -89,6 +106,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="@color/buttonColor"
+                android:textColor="@color/textColor"
+                android:padding="10dp"
                 />
 
             <ProgressBar

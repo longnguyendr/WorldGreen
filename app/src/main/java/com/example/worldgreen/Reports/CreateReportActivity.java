@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -236,7 +237,7 @@ public class CreateReportActivity extends AppCompatActivity {
 
     private void setupUI() {
         setupCreateButton();
-        setupUpdateLocationButton();
+//        setupUpdateLocationButton();
         setupCameraButton();
         setupSpinner();
         setProgressBar(false);
@@ -252,19 +253,19 @@ public class CreateReportActivity extends AppCompatActivity {
         });
     }
 
-    void setupUpdateLocationButton() {
-        Button updateLocationButton = findViewById(R.id.update_location);
-        updateLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: update btn clicked");
-                getLocation();
-            }
-        });
-    }
+//    void setupUpdateLocationButton() {
+//        Button updateLocationButton = findViewById(R.id.update_location);
+//        updateLocationButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(TAG, "onClick: update btn clicked");
+//                getLocation();
+//            }
+//        });
+//    }
 
     void setupCameraButton() {
-        Button cameraButton = findViewById(R.id.add_photo_button);
+        ImageButton cameraButton = findViewById(R.id.add_photo_button);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,8 +276,9 @@ public class CreateReportActivity extends AppCompatActivity {
 
     void setupSpinner() {
         Spinner spinner = findViewById(R.id.report_size);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.report_size, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.report_size, R.layout.custom_spinner_text_view);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_text_view);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
