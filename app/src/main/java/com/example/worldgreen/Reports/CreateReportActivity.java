@@ -136,18 +136,29 @@ public class CreateReportActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
+
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // Enable the my location layer if the permission has been granted.
+                    getLocation();
+                } else {
+                    // Display the missing permission error dialog when the fragments resume.
+                    mPermissionDenied = true;
+                }
+            case CAMERA_REQUEST:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    dispatchTakePictureIntent();
+
+                } else {
+
+                    Toast.makeText(this, "Please, grant camera permission.", Toast.LENGTH_LONG).show();
+
+                }
         }
 
-        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Enable the my location layer if the permission has been granted.
-            getLocation();
-        } else {
-            // Display the missing permission error dialog when the fragments resume.
-            mPermissionDenied = true;
-        }
     }
 
     @Override
@@ -393,10 +404,16 @@ public class CreateReportActivity extends AppCompatActivity {
 
 
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, CAMERA_REQUEST);
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        } else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST);
+            }
         }
+
     }
 
     private void dispatchGalleryIntent() {
