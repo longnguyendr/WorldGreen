@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
@@ -25,6 +27,7 @@ import com.example.worldgreen.Reports.CreateReportActivity;
 import com.example.worldgreen.Reports.MyReportActivity;
 import com.example.worldgreen.Users.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,8 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
     final static String TAG = "MyEventActivity";
     EventListAdapter adapter;
     RecyclerView recyclerView;
+    ProgressBar progressBar;
+    private TextView navUsername;
     final ArrayList<Event> myEvent = new ArrayList<Event>();
     FirebaseAuth mAuth;
     boolean participating = false;
@@ -42,6 +47,7 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_event);
 
+        progressBar = findViewById(R.id.progressBar_my_event);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -51,7 +57,11 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navUsername = headerView.findViewById(R.id.textView_nav_header_main);
+        navUsername.setText(String.valueOf(user.getEmail()));
         navigationView.setNavigationItemSelectedListener(this);
         participating = getIntent().getBooleanExtra("participating", false);
         prepareView();
@@ -63,11 +73,18 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
         }
     }
     protected void prepareView () {
+        progressBar(true);
         recyclerView = (RecyclerView) findViewById(R.id.events_list_recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-
+    private void progressBar(Boolean trigger) {
+        if (trigger) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
     /**
      *  When event is added to participants in event, event is updated and onDataChange in FirebaseManager is called
      *  -> also onCallback is called again. That means that onCallback we have new event.
@@ -97,6 +114,7 @@ public class MyEventActivity extends AppCompatActivity implements  NavigationVie
                 } else {
                     myEvent.add(event);
                 }
+                progressBar(false);
                 adapter.notifyDataSetChanged();
             }
         });

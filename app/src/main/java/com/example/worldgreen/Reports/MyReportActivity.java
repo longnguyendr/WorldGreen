@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.worldgreen.Donate.DonateActivity;
@@ -25,6 +27,7 @@ import com.example.worldgreen.R;
 import com.example.worldgreen.DataModel.Report;
 import com.example.worldgreen.Users.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -33,6 +36,8 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
     final static String TAG = "MyReportActivity";
     ReportListAdapter adapter;
     RecyclerView recyclerView;
+    ProgressBar progressBar;
+    private TextView navUsername;
     final ArrayList<Report> myReports = new ArrayList<Report>();
 
     @Override
@@ -40,6 +45,8 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_report);
+
+        progressBar = findViewById(R.id.progressBar_my_report);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,17 +56,28 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navUsername = headerView.findViewById(R.id.textView_nav_header_main);
+        navUsername.setText(String.valueOf(user.getEmail()));
         navigationView.setNavigationItemSelectedListener(this);
         setupRecycleView();
         getReports();
     }
 
     void setupRecycleView() {
+        progressBar(true);
         recyclerView = (RecyclerView) findViewById(R.id.reports_list_recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
+    private void progressBar(Boolean trigger) {
+        if (trigger) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
     void getReports() {
         getUsersReports();
     }
@@ -74,7 +92,7 @@ public class MyReportActivity extends AppCompatActivity implements ReportListAda
             @Override
             public void onCallback(Report report) {
                 myReports.add(report);
-
+                progressBar(false);
                 adapter.notifyDataSetChanged();
             }
         });

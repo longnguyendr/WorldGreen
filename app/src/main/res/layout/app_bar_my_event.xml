@@ -23,6 +23,12 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.AppBarLayout>
+        <ProgressBar
+            android:id="@+id/progressBar_my_event"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="visible" />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/events_list_recycleView"
             android:layout_width="match_parent"

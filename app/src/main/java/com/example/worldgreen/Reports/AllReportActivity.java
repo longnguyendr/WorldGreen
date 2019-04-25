@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Report;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.worldgreen.MapManager.MapManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
     final static String TAG = "AllReportActivity";
     final ArrayList<Report> allReport = new ArrayList<Report>();
     private GoogleMap mMap;
+    private TextView navUsername;
     /**Keeps track of the selected marker.**/
     private Marker mSelectedMarker;
     private boolean mPermissionDenied = false;
@@ -86,7 +89,11 @@ public class AllReportActivity extends AppCompatActivity implements GoogleMap.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navUsername = headerView.findViewById(R.id.textView_nav_header_main);
+        navUsername.setText(String.valueOf(user.getEmail()));
         navigationView.setNavigationItemSelectedListener(this);
     }
     @Override

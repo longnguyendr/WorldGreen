@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //        //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("Mainactivity", "Username: " + user);
-
+        Log.d("Mainactivity", "Username: " + user.getEmail());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,12 +81,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navUsername.setText(String.valueOf(user.getEmail()));
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
-//        startActivity(new Intent(this,AllReportActivity.class));
-
-////        btnMaps = findViewById(R.id.maps_button);
-////        btnMaps.setOnClickListener(this);
+//        btnMaps = findViewById(R.id.maps_button);
+//        btnMaps.setOnClickListener(this);
 //        btnSignOut = findViewById(R.id.Logout_button);
 //        btnSignOut.setOnClickListener(this);
 //        btnViewAllReport = findViewById(R.id.view_all_report_button);
@@ -200,9 +195,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            case R.id.donate_button:
 //                startActivity(new Intent(MainActivity.this, DonateActivity.class));
 //                break;
-////            case R.id.maps_button:
-////                startActivity(new Intent(MainActivity.this, MapsActivity.class));
-////                break;
+//            case R.id.maps_button:
+//                startActivity(new Intent(MainActivity.this, MapsActivity.class));
+//                break;
 //                default:break;
 //        }
 //    }

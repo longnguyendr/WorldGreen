@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
@@ -28,6 +29,7 @@ import com.example.worldgreen.Reports.CreateReportActivity;
 import com.example.worldgreen.Reports.MyReportActivity;
 import com.example.worldgreen.Users.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,6 +40,7 @@ public class AllEventActivity extends AppCompatActivity implements NavigationVie
     EventListAdapter adapter;
     private ProgressBar progressBar;
     RecyclerView recyclerView;
+    private TextView navUsername;
     final ArrayList<Event> allEvent = new ArrayList<Event>();
 
     @Override
@@ -55,7 +58,11 @@ public class AllEventActivity extends AppCompatActivity implements NavigationVie
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navUsername = headerView.findViewById(R.id.textView_nav_header_main);
+        navUsername.setText(String.valueOf(user.getEmail()));
         navigationView.setNavigationItemSelectedListener(this);
 
 
