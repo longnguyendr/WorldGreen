@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -93,6 +95,17 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
         });
+        ImageButton goToMapButton = findViewById(R.id.show_in_map);
+        goToMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uriString = "geo:" + report.getLatitude() + "," + report.getLongitude();
+                Log.d(TAG, "onClick: uriString: " + uriString);
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse(uriString));
+                startActivity(intent);
+            }
+        });
     }
 
     private void displayData() {
@@ -125,7 +138,7 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
         } else {
             addressTextView.setText("Unknown address.");
         }
-        position.setText("Latitude: " + latStr + ", Longitude: " + lonStr);
+        position.setText(latStr + ", " + lonStr);
         size.setText(report.getSize());
 
 
