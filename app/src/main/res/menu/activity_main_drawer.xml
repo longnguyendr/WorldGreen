@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_action_home"
             android:title="@string/main_activity" />
         <item
             android:id="@+id/nav_create_report"
@@ -14,15 +14,15 @@
             android:title="@string/btn_create_report" />
         <item
             android:id="@+id/nav_view_all_event"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_event"
             android:title="@string/view_all_event_button" />
         <item
             android:id="@+id/nav_view_all_report"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_view_all_report"
             android:title="@string/view_all_report_button" />
         <item
             android:id="@+id/nav_donate"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/ic_menu_donate"
             android:title="@string/donate_button" />
     </group>
 
@@ -30,19 +30,19 @@
         <menu>
             <item
                 android:id="@+id/nav_my_report"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_menu_my_report"
                 android:title="@string/btn_view_my_report" />
             <item
                 android:id="@+id/nav_my_event"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_event"
                 android:title="@string/btn_view_my_event" />
             <item
                 android:id="@+id/nav_participate_event"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_participate_event"
                 android:title="@string/nav_participate_event" />
             <item
                 android:id="@+id/nav_sign_out"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_logout"
                 android:title="@string/btn_sign_out" />
         </menu>
     </item>

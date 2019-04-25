@@ -32,8 +32,8 @@
     <string name="btn_profile">View Profile</string>
     <string name="create_event_button">Create Event</string>
     <string name="donate_button">Donate</string>
-    <string name="view_all_report_button">View All Report</string>
-    <string name="view_all_event_button">View All Event</string>
+    <string name="view_all_report_button">View All Reports</string>
+    <string name="view_all_event_button">View All Events</string>
     <string-array name="report_size">
         <item>Bag</item>
         <item>Wheelbarrow</item>
@@ -43,13 +43,13 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_title">Welcome</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="edit_profile">Edit Profile</string>
-    <string name="btn_view_my_report">My report</string>
-    <string name="btn_view_my_event">My Event</string>
+    <string name="btn_view_my_report">My reports</string>
+    <string name="btn_view_my_event">My Events</string>
     <string name="btn_view_participating_event">I am participating</string>
     <string name="title_activity_maps">Map</string>
     <string name="btn_maps">Maps</string>
@@ -61,5 +61,5 @@
     <string name="report_title">Enter title</string>
     <string name="report_description">Enter description</string>
     <string name="Dashboard">Intructions</string>
-    <string name="nav_participate_event">Participate Event</string>
+    <string name="nav_participate_event">Participate Events</string>
 </resources>

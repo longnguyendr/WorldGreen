@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.worldgreen.DataModel.Event;
@@ -35,6 +36,7 @@ import java.util.List;
 public class AllEventActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     final static String TAG = "AllEventActivity";
     EventListAdapter adapter;
+    private ProgressBar progressBar;
     RecyclerView recyclerView;
     final ArrayList<Event> allEvent = new ArrayList<Event>();
 
@@ -43,9 +45,10 @@ public class AllEventActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_event);
 
+        progressBar = findViewById(R.id.progressBar_all_event);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -55,17 +58,25 @@ public class AllEventActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
         prepareView();
         getAllUsersEvent();
 
     }
 
     protected void prepareView() {
+        progressBar(true);
         recyclerView = findViewById(R.id.events_list_recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-
+    private void progressBar(Boolean trigger) {
+        if (trigger) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
     /**
      *  When event is added to participants in event, event is updated and onDataChange in FirebaseManager is called
      *  -> also onCallback is called again. That means that onCallback we have new event.
@@ -93,6 +104,7 @@ public class AllEventActivity extends AppCompatActivity implements NavigationVie
                 } else {
                     allEvent.add(event);
                 }
+                progressBar(false);
                 adapter.notifyDataSetChanged();
             }
         });

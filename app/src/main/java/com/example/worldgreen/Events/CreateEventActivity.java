@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +35,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class CreateEventActivity extends FragmentActivity implements
+public class CreateEventActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener{
 

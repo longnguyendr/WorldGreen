@@ -12,10 +12,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.Menu;
 
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    implements View.OnClickListener {
 
     private Button btnSignOut, btnCreateReport, btnViewProfile, btnViewAllReport, btnViewAllEvent, btnDonate, btnMaps;
+    private TextView navUsername;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     @Override
@@ -59,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setContentView(R.layout.activity_main);
 
+//        //get current user
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("Mainactivity", "Username: " + user);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -69,13 +77,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navUsername = headerView.findViewById(R.id.textView_nav_header_main);
+        navUsername.setText(String.valueOf(user.getEmail()));
         navigationView.setNavigationItemSelectedListener(this);
+
 
 
 //        startActivity(new Intent(this,AllReportActivity.class));
 
-//        //get current user
-//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 ////        btnMaps = findViewById(R.id.maps_button);
 ////        btnMaps.setOnClickListener(this);
 //        btnSignOut = findViewById(R.id.Logout_button);
@@ -135,23 +145,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_nav, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_sign_out:
-                auth.signOut();
-                Toast.makeText(MainActivity.this, "Sign out Successful", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-                return true;
-            default: return false;
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_nav, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menu_sign_out:
+//                auth.signOut();
+//                Toast.makeText(MainActivity.this, "Sign out Successful", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//                finish();
+//                return true;
+//            default: return false;
+//        }
+//    }
     @Override
     public void onStart() {
         super.onStart();

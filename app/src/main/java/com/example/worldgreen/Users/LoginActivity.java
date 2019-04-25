@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (!task.isSuccessful()) {
                                     // there was an error
+                                    progressBar.setVisibility(View.GONE);
                                     if (password.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
                                     } else {

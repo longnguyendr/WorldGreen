@@ -8,27 +8,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="669dp"
         android:orientation="vertical">
-            <android.support.design.widget.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/AppTheme.AppBarOverlay">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-            </android.support.design.widget.AppBarLayout>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/events_list_recycleView"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar_all_event"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/events_list_recycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
+
 
 
 </android.support.design.widget.CoordinatorLayout>
