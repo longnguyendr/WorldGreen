@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single" >
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_action_home"
@@ -26,7 +26,8 @@
             android:title="@string/donate_button" />
     </group>
 
-    <item android:title="My Activity">
+    <item android:title="@string/subtitle"
+        android:id="@+id/My_activity">
         <menu>
             <item
                 android:id="@+id/nav_my_report"

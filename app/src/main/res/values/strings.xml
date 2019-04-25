@@ -28,7 +28,7 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">Please enter your registered Email to sent you password reset instructions.</string>
-    <string name="btn_create_report">Create report</string>
+    <string name="btn_create_report">Create Report</string>
     <string name="btn_profile">View Profile</string>
     <string name="create_event_button">Create Event</string>
     <string name="donate_button">Donate</string>
@@ -60,6 +60,12 @@
     <string name="main_activity">Home</string>
     <string name="report_title">Enter title</string>
     <string name="report_description">Enter description</string>
-    <string name="Dashboard">Intructions</string>
+    <string name="Dashboard">How to use</string>
     <string name="nav_participate_event">Participate Events</string>
+    <string name="instruction">Create report</string>
+    <string name="how_to_create_report">Taking a snapshot of illegal dumping along with title and description</string>
+    <string name="how_to_create_event" > 1/ Select View All Report\n2/ Pick your favourite report on Maps\n3/ Create new event</string>
+    <string name="how_to_participate_event">1/ Select View All Event\n2/ Pick your favourite event on List\n3/ Select Going</string>
+    <string name="how_to_donate">Supporting development team to create a better services !</string>
+    <string name="subtitle">My Activity</string>
 </resources>
