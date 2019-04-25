@@ -101,6 +101,7 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
             addPhoto(bitmap);
         }
 
+        TextView titleTextView = findViewById(R.id.report_detail_title);
         TextView description = findViewById(R.id.description);
         TextView accessibility = findViewById(R.id.accessibility);
         TextView addressTextView = findViewById(R.id.address);
@@ -118,7 +119,12 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
         } else {
             accessibility.setText("Is not accessible by car");
         }
-        addressTextView.setText(address);
+        titleTextView.setText(report.getTitle());
+        if (address.length() > 0 ) {
+            addressTextView.setText(address);
+        } else {
+            addressTextView.setText("Unknown address.");
+        }
         position.setText("Latitude: " + latStr + ", Longitude: " + lonStr);
         size.setText(report.getSize());
 

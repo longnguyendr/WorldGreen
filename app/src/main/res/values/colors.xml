@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00bcd4</color>
-    <color name="colorPrimaryDark">#6969BB</color>
-    <color name="colorAccent">#f2fe71</color>
+    <color name="colorPrimary">#247065</color>
+    <color name="viewBackgroundColor">#1F2C3C</color>
+    <color name="buttonColor">#2B3D54</color>
+    <color name="editTextBackgroundColor">#16202D</color>
+    <color name="textColor">#D2D2D2</color>
+    <color name="textHintColor">#808080</color>
 
     <color name="bg_login">#26ae90</color>
     <color name="bg_register">#2e3237</color>
