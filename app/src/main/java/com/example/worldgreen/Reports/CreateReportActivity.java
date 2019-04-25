@@ -311,6 +311,7 @@ public class CreateReportActivity extends AppCompatActivity {
             createReport();
         } catch (CreateReportException e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            resetButton();
             e.printStackTrace();
         }
     }

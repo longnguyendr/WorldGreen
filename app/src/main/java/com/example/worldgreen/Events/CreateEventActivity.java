@@ -129,6 +129,7 @@ public class CreateEventActivity extends FragmentActivity implements
             createEvent();
         } catch (CreateEventException e) {
             Toast.makeText(CreateEventActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            resetCreateButton();
             e.printStackTrace();
 
         }
