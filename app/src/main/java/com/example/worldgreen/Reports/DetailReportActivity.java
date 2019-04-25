@@ -3,6 +3,8 @@ package com.example.worldgreen.Reports;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,9 +39,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class DetailReportActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -97,9 +103,14 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
 
         TextView description = findViewById(R.id.description);
         TextView accessibility = findViewById(R.id.accessibility);
-        TextView address = findViewById(R.id.address);
+        TextView addressTextView = findViewById(R.id.address);
         TextView position = findViewById(R.id.gps_coordinates);
         TextView size = findViewById(R.id.size);
+
+        String address = getAddress(report.getLatitude(), report.getLongitude());
+        DecimalFormat df = new DecimalFormat("##.####");
+        String latStr = df.format(report.getLatitude());
+        String lonStr = df.format(report.getLongitude());
 
         description.setText(report.getDescription());
         if (report.isAccessibleByCar()) {
@@ -107,10 +118,31 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
         } else {
             accessibility.setText("Is not accessible by car");
         }
-        address.setText("not implemented address yet");
-        position.setText("lat: " + report.getLatitude() + ", long: " + report.getLongitude());
+        addressTextView.setText(address);
+        position.setText("Latitude: " + latStr + ", Longitude: " + lonStr);
         size.setText(report.getSize());
 
+
+    }
+
+    private String getAddress(double lat, double lon) {
+        String cityName = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(lat,lon,10);
+            if (addresses.size() > 0) {
+                for (Address address : addresses) {
+                    if (address.getLocality() != null && address.getLocality().length() > 0) {
+                        cityName = address.getLocality();
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cityName;
     }
 
     private void addPhoto(Bitmap photo) {

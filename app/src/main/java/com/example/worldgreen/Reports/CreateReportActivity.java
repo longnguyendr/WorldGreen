@@ -49,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -150,13 +151,13 @@ public class CreateReportActivity extends AppCompatActivity {
             case CAMERA_REQUEST:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    dispatchTakePictureIntent();
+//                    dispatchTakePictureIntent();
 
                 } else {
-
                     Toast.makeText(this, "Please, grant camera permission.", Toast.LENGTH_LONG).show();
-
                 }
+                default:
+                    Log.d(TAG, "onRequestPermissionsResult: default");
         }
 
     }
@@ -215,12 +216,17 @@ public class CreateReportActivity extends AppCompatActivity {
     }
 
     private void updateLocationTextView(Location location) {
-        TextView locationTextView = findViewById(R.id.location_textView);
         String address = getAddress(location.getLatitude(), location.getLongitude());
-        String latStr = Double.toString(location.getLatitude());
-        String lonStr = Double.toString(location.getLongitude());
+        TextView locationTextView = findViewById(R.id.location_textView);
+        DecimalFormat df = new DecimalFormat("##.####");
+        String latStr = df.format(location.getLatitude());
+        String lonStr = df.format(location.getLongitude());
 
-        locationTextView.setText("Lat: " + latStr + " Lon: " + lonStr + "address: " + address);
+        if (address.length() > 0) {
+            locationTextView.setText("Latitude: " + latStr + " Longitude: " + lonStr + "\n" + "address: " + address);
+        } else {
+            locationTextView.setText("Latitude: " + latStr + " Longitude: " + lonStr);
+        }
     }
 
     //endregion
@@ -358,7 +364,7 @@ public class CreateReportActivity extends AppCompatActivity {
         FirebaseManager manager = new FirebaseManager();
 
         manager.saveReport(this, report);
-        
+
     }
 
     //endregion
