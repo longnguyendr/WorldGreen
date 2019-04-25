@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:divider="@drawable/divider"
                 android:showDividers="middle"
                 >
@@ -81,7 +81,7 @@
                         android:layout_marginRight="40dp"
                         android:textColor="@color/textColor"
                         android:layout_gravity="center"
-                        android:text="description"
+                        android:text="descriptdawdaw daw dawda wdadwdadawdawddawdwadion"
                         android:textAlignment="center"
                         />
 
@@ -91,14 +91,13 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_gravity="fill"
+                    android:layout_gravity="center"
                     android:background="@color/editTextBackgroundColor"
                     >
                     <ImageView
                         android:id="@+id/detail_access_img"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/ic_acess_car"
                         android:layout_margin="10dp"
                         />
                     <TextView
@@ -115,18 +114,16 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_size_wheelbarrow"
                         android:scaleType="fitStart"
                         android:layout_margin="10dp"
                         />
                     <TextView
                         android:id="@+id/size"
                         android:layout_width="wrap_content"
-                        android:maxWidth="80dp"
                         android:layout_height="wrap_content"
                         android:textColor="@color/textColor"
                         android:layout_gravity="center"
-                        android:text="Bag should be enough"
+                        android:text="Wheelbarrow needed"
                         android:layout_marginRight="10dp"
                         />
 
@@ -136,6 +133,7 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:gravity="fill"
+                    android:layout_gravity="center"
                     android:paddingLeft="10dp"
                     >
 
@@ -181,12 +179,23 @@
 
                 </LinearLayout>
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="20dp"
+                >
                 <Button
                     android:id="@+id/test_create_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="create event"
-                    android:layout_gravity="center"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
                     android:background="@color/buttonColor"
                     android:textColor="@color/textColor"
                     android:padding="10dp"

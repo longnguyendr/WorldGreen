@@ -120,6 +120,9 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
         TextView addressTextView = findViewById(R.id.address);
         TextView position = findViewById(R.id.gps_coordinates);
         TextView size = findViewById(R.id.size);
+        ImageView accessImg = findViewById(R.id.detail_access_img);
+        ImageView sizeImg = findViewById(R.id.detail_size_img);
+
 
         String address = getAddress(report.getLatitude(), report.getLongitude());
         DecimalFormat df = new DecimalFormat("##.####");
@@ -127,20 +130,37 @@ public class DetailReportActivity extends AppCompatActivity implements Navigatio
         String lonStr = df.format(report.getLongitude());
 
         description.setText(report.getDescription());
-        if (report.isAccessibleByCar()) {
-            accessibility.setText("Is accessible by car");
-        } else {
-            accessibility.setText("Is not accessible by car");
-        }
         titleTextView.setText(report.getTitle());
+        position.setText(latStr + ", " + lonStr);
+
+        if (report.isAccessibleByCar()) {
+            accessImg.setBackgroundResource(R.drawable.ic_acess_car);
+            accessibility.setText("Accessible by car");
+        } else {
+            accessImg.setBackgroundResource(R.drawable.ic_acess_walk);
+            accessibility.setText("Not accessible by car");
+        }
+
+
         if (address.length() > 0 ) {
             addressTextView.setText(address);
         } else {
             addressTextView.setText("Unknown address.");
         }
-        position.setText(latStr + ", " + lonStr);
-        size.setText(report.getSize());
 
+        if (report.getSize().toLowerCase().equals("bag")) {
+            Log.d(TAG, "displayData: set as bag");
+            sizeImg.setBackgroundResource(R.drawable.ic_size_sack);
+            size.setText(report.getSize() + " should be enough");
+        } else if (report.getSize().toLowerCase().equals("wheelbarrow")) {
+            Log.d(TAG, "displayData: set as wheelbarrow");
+            sizeImg.setBackgroundResource(R.drawable.ic_size_wheelbarrow);
+            size.setText(report.getSize() + " needed.");
+        } else if (report.getSize().toLowerCase().equals("car")) {
+            Log.d(TAG, "displayData: set as car");
+            sizeImg.setBackgroundResource(R.drawable.ic_acess_car);
+            size.setText(report.getSize() + " needed.");
+        }
 
     }
 

@@ -4,26 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Donate.DonateActivity">
+    tools:context=".Donate.DonateActivity"
+    android:background="@color/viewBackgroundColor"
+    >
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:divider="@drawable/divider"
+        android:showDividers="middle"
+        >
 
-
-        <EditText
-            android:id="@+id/edtAmount"
-            android:hint="Enter Amount"
+        <TextView
+            android:id="@+id/amount_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="50dp"
+            android:textAlignment="center"
+            android:textColor="@color/textColor"
+            />
+
+        <SeekBar
+            android:id="@+id/amount_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:min="1"
+            android:max="2000"
+            />
 
         <Button
             android:id="@+id/BtnPayNow"
             android:text="Pay Now"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColor"
+            android:background="@color/buttonColor"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            />
     </LinearLayout>
 
 </RelativeLayout>
