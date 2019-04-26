@@ -19,20 +19,32 @@ class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>
     private LayoutInflater mInflater;
     private itemClickListener onItemClickListener;
 
-    // data is passed into the constructor
+    /**
+     * @param context
+     * @param eventData
+     * data is passed into the constructor
+     */
     EventListAdapter(Context context, ArrayList<Event> eventData) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = eventData;
     }
 
-    // inflates the row layout from xml when needed
+    /**
+     * @param parent
+     * @param viewType
+     * @return inflates the row layout from xml when needed
+     */
     @Override
     public EventListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.event_row, parent, false);
         return new EventListAdapter.ViewHolder(view);
     }
 
-    // binds the data to the TextView in each row
+    /**
+     * @param holder
+     * @param position
+     * binds the data to the TextView in each row
+     */
     @Override
     public void onBindViewHolder(EventListAdapter.ViewHolder holder, int position) {
         String animal = mData.get(position).getTitle();
@@ -40,14 +52,18 @@ class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>
     }
 
 
-    // total number of rows
+    /**
+     * @return total number of rows
+     */
     @Override
     public int getItemCount() {
         return mData.size();
     }
 
 
-    // stores and recycles views as they are scrolled off screen
+    /**
+     * stores and recycles views as they are scrolled off screen
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView myTextView;
 

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setContentView(R.layout.activity_main);
 
-//        //get current user
+        //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Log.d("Mainactivity", "Username: " + user.getEmail());
 
@@ -106,6 +106,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
+    /**
+     * Nav-drawer item selected event
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
